@@ -27,5 +27,14 @@ namespace ShoppingList.Controllers
             return View(_repository.GetShoppingList(id.Value));
         }
 
+        [HttpPost]
+        public IActionResult Save(Guid shoppingListId, string joinedItems) {
+            var itemNames = string.IsNullOrEmpty(joinedItems) ? Enumerable.Empty<string>() : joinedItems.Split('§');
+            var list = _repository.GetShoppingList(shoppingListId);
+            list.Save(itemNames);
+
+            return new HttpOkResult();
+        }
+
     }
 }

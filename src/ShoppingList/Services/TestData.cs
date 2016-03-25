@@ -21,7 +21,7 @@ namespace ShoppingList.Services {
             var stores = _storeFactory.CreateStores("Coop Valla", "ICA Maxi", "City Gross", "Systembolaget");
             target.Save(stores);
 
-            var sl1 = _shoppingListFactory.Create(stores[0], DateTime.Today + TimeSpan.FromDays(2), items.TakeRandom(2, 5).ToArray());
+            var sl1 = _shoppingListFactory.Create(stores[0], DateTime.Today + TimeSpan.FromDays(2), items.TakeRandom(2, 5).ToArray(), new Guid("{E753B7F9-152F-4C2C-ACF4-C6D12F3460C3}"));
             var sl2 = _shoppingListFactory.Create(stores[1], DateTime.Today + TimeSpan.FromDays(1), items.TakeRandom(4, 8).ToArray());
             var sl3 = _shoppingListFactory.Create(stores[2], DateTime.Today + TimeSpan.FromDays(3), items.TakeRandom(3, 10).ToArray());
             target.Save(new[]{sl1, sl2, sl3});

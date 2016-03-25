@@ -3,13 +3,10 @@
     ViewData["Title"] = "View Stores";
 }
 
-<h2>Store</h2>
+<h1>
+    <span class="label label-default">Stores</span>
+</h1>
 
 @foreach (var item in Model) {
     <div class="list-group-item">@Html.DisplayFor(modelItem => item.Name)</div>
-    @*<td>
-            <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-            <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-            <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-        </td>*@
 }

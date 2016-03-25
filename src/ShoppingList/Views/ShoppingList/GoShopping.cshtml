@@ -3,8 +3,27 @@
     ViewData["Title"] = "Go Shopping";
 }
 
+<script type="text/javascript">
+    var checkedItems = [];
 
-<h2>Shop</h2>
+    function ItemChecked(item, ischecked) {
+        if (ischecked) {
+            checkedItems.push(item);
+        } else {
+            var index = checkedItems.indexOf(item);
+            if (index >= 0) {
+                checkedItems.splice(index, 1);
+            }
+        }
+        document.getElementById('debug').innerHTML = checkedItems;
+    }
+
+    function Save() {
+        var parameters = "shoppingListId=@Model.ID" + "&joinedItems=" + checkedItems.join("§");
+        var postUrl = "@Url.Action("Save", "ShoppingList")?" + parameters;
+        $.post(postUrl, function(data) {});
+    }
+</script>
 
 <h1>
     <span class="label label-default">@Html.DisplayFor(modelItem => Model.ShortDescription)</span>
@@ -13,7 +32,13 @@
 <div class="list-group">
     @foreach (var item in Model.Items) {
         <div class="list-group-item">
-            <input type="checkbox">@Html.DisplayFor(modelItem => item.Name)<br>
+            <input onchange="ItemChecked('@item.Name', checked)" type="checkbox">@Html.DisplayFor(modelItem => item.Name)<br>
         </div>
     }
 </div>
+
+<p>
+    <button type="button" class="btn btn-success" onclick="Save()">Save</button>
+    <a asp-controller="ShoppingList" asp-action="ViewShoppingLists" class="btn btn-danger">Cancel</a>
+</p>
+

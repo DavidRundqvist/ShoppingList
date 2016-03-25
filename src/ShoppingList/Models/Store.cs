@@ -17,7 +17,8 @@ namespace ShoppingList.Models {
             ID = id;
         }
 
-        public void CompleteShopping(List<Item> newOrderedItems) {
+        public void CompleteShopping(IEnumerable<Item> newOrderedItems) {
+            newOrderedItems = newOrderedItems.ToList();
             if (!newOrderedItems.Any())
                 return;
 

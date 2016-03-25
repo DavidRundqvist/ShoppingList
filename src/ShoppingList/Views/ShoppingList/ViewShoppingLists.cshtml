@@ -4,34 +4,16 @@
 }
 
 
-<h2>Shopping Lists</h2>
+<h1>
+    <span class="label label-default">Shopping Lists</span>
+</h1>
 
 <div class="list-group">
     <a class="list-group-item" asp-controller="ShoppingList" asp-action="EditShoppingList">New...</a>
 
-@foreach (var item in Model)
-{
-    <a class="list-group-item" asp-controller="ShoppingList" asp-action="GoShopping" asp-route-id="@item.ID" >@Html.DisplayFor(modelItem => item.LongDescription)</a>
-    @*<td>
-            <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-            <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-            <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-        </td>*@
+@foreach (var item in Model) {
+    <a class="list-group-item" asp-controller="ShoppingList" asp-action="GoShopping" asp-route-id="@item.ID">@Html.DisplayFor(modelItem => item.LongDescription)</a>
 }
 
-    @*<div class="list-group-item">
-        <div class="row">
-            <div class="col-sm-4">2015-03-04 at Ica maxi</div>
-            <div class="col-sm-4"><a class="list-group-item" asp-controller="ShoppingList" asp-action="EditShoppingList">Edit...</a></div>
-            <div class="col-sm-4"><a class="list-group-item" asp-controller="ShoppingList" asp-action="GoShopping">Shop...</a></div>
-        </div>        
-    </div>
-    <div class="list-group-item">
-        <div class="row">
-            <div class="col-sm-4">2014-06-02 at Coop Valla</div>
-            <div class="col-sm-4"><a class="list-group-item" asp-controller="ShoppingList" asp-action="EditShoppingList">Edit...</a></div>
-            <div class="col-sm-4"><a class="list-group-item" asp-controller="ShoppingList" asp-action="GoShopping">Shop...</a></div>
-        </div>
-    </div>*@
 </div>
 

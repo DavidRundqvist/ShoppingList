@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using Microsoft.Data.Entity.Internal;
+using System.Linq;
 
 namespace ShoppingList.Models {
     public class ShoppingList {
@@ -19,5 +22,9 @@ namespace ShoppingList.Models {
         public string LongDescription => $"{Store.Name} @ {Date.ToString("d")}, {Items.Length} items";
         public string ShortDescription => $"{Store.Name} @ {Date.ToString("d")}";
 
+        public void Save(IEnumerable<string> itemNames) {
+            var items = itemNames.Join(Items, name => name, item => item.Name, (name, item) => item);
+            Store.CompleteShopping(items);
+        }
     }
 }
