@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>@ViewData["Title"] - ShoppingList</title>
+        <title>@ViewData["Title"] - Shopping List</title>
 
 @*        <environment names="Development">*@
             <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
@@ -30,8 +30,8 @@
                 </div>
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
-                        <li><a asp-controller="Store" asp-action="ViewStores">Stores</a></li>
-                        <li><a asp-controller="Item" asp-action="ViewItems">Items</a></li>
+                        <li><a asp-controller="Stores" asp-action="ViewStores">Stores</a></li>
+                        <li><a asp-controller="Items" asp-action="ViewItems">Items</a></li>
                     </ul>
                 </div>
             </div>
@@ -40,7 +40,7 @@
             @RenderBody()
             <hr />
             <footer>
-                <p>&copy; 2016 - ShoppingList</p>
+                <p>&copy; 2016 - Shopping List</p>
             </footer>
         </div>
 

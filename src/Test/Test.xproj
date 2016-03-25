@@ -6,8 +6,8 @@
   </PropertyGroup>
   <Import Project="$(VSToolsPath)\DNX\Microsoft.DNX.Props" Condition="'$(VSToolsPath)' != ''" />
   <PropertyGroup Label="Globals">
-    <ProjectGuid>682b44db-1f4c-41e3-8308-077a2235c4ae</ProjectGuid>
-    <RootNamespace>ShoppingList</RootNamespace>
+    <ProjectGuid>e4ed45b9-0178-4bc5-8d4a-ee3198522e80</ProjectGuid>
+    <RootNamespace>Test</RootNamespace>
     <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)'=='' ">..\..\artifacts\obj\$(MSBuildProjectName)</BaseIntermediateOutputPath>
     <OutputPath Condition="'$(OutputPath)'=='' ">..\..\artifacts\bin\$(MSBuildProjectName)\</OutputPath>
   </PropertyGroup>

@@ -1,0 +1,15 @@
+﻿@model List<ShoppingList.Models.Item>
+@{
+    ViewData["Title"] = "View Items";
+}
+
+<h2>Items</h2>
+
+@foreach (var item in Model) {
+    <div class="list-group-item">@Html.DisplayFor(modelItem => item.Name)</div>
+        @*<td>
+            <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+            <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+            <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+        </td>*@
+}

@@ -3,6 +3,7 @@ using Microsoft.AspNet.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using ShoppingList.Services;
 
 namespace ShoppingList
 {
@@ -43,6 +44,19 @@ namespace ShoppingList
             services.AddMvc();
 
             // Add application services.
+            services.AddTransient<ItemFactory>();
+            services.AddTransient<StoreFactory>();
+            services.AddTransient<ShoppingListFactory>();
+            services.AddTransient<TestData>();
+            services.AddSingleton<IRepository>(sp => {
+                                                   var result = new MemoryRepository();
+                                                   var env = sp.GetService<IHostingEnvironment>();
+                                                   if (env.IsDevelopment()) {
+                                                       sp.GetService<TestData>().InsertTestData(result);
+                                                   }
+                                                   return result;
+                                               });
+
             //services.AddTransient<IEmailSender, AuthMessageSender>();
             //services.AddTransient<ISmsSender, AuthMessageSender>();
         }

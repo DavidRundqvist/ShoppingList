@@ -1,19 +1,19 @@
-﻿@{
-    ViewData["Title"] = "View Shopping Lists";
+﻿@model ShoppingList.Models.ShoppingList
+@{
+    ViewData["Title"] = "Go Shopping";
 }
 
 
 <h2>Shop</h2>
 
 <h1>
-    <span class="label label-default">Ica Maxi</span>
+    <span class="label label-default">@Html.DisplayFor(modelItem => Model.ShortDescription)</span>
 </h1>
 
 <div class="list-group">
-    <a href="#" class="list-group-item">Smör</a>
-    <a href="#" class="list-group-item">Bröd</a>
-    <a href="#" class="list-group-item">Ost</a>
-    <a href="#" class="list-group-item">Fisk</a>
-    <a href="#" class="list-group-item">Bananer</a>
+    @foreach (var item in Model.Items) {
+        <div class="list-group-item">
+            <input type="checkbox">@Html.DisplayFor(modelItem => item.Name)<br>
+        </div>
+    }
 </div>
-
