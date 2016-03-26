@@ -29,13 +29,19 @@
     <span class="label label-default">@Html.DisplayFor(modelItem => Model.ShortDescription)</span>
 </h1>
 
-<div class="list-group">
-    @foreach (var item in Model.Items) {
-        <div class="list-group-item">
-            <input onchange="ItemChecked('@item.Name', checked)" type="checkbox">@Html.DisplayFor(modelItem => item.Name)<br>
-        </div>
-    }
-</div>
+
+
+
+
+
+@foreach (var item in Model.Items) {
+    <div class="checkbox checkbox-success">
+        <input id="@item.Name" onchange="ItemChecked('@item.Name', checked)" class="styled" type="checkbox">
+        <label for="@item.Name">@Html.DisplayFor(modelItem => item.Name)</label>
+    </div>
+}
+
+
 
 <p>
     <button type="button" class="btn btn-success" onclick="Save()">Save</button>
