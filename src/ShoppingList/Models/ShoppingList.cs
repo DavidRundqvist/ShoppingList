@@ -38,8 +38,6 @@ namespace ShoppingList.Models {
             }
 
             Items = nonBoughtItems.Concat(boughtItems).ToArray();
-
-            Store.BuyItems(this);
         }
     }
 }

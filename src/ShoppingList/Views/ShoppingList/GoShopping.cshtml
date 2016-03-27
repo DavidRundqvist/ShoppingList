@@ -17,7 +17,6 @@
                 checkedItems.splice(index, 1);
             }
         }
-        document.getElementById('debug').innerHTML = checkedItems;
     }
 
     function Save() {
@@ -29,15 +28,11 @@
     }
 </script>
 
+
+<!-- List of shopping list items -->
 <h1>
     <span class="label label-default">@Html.DisplayFor(modelItem => Model.ShortDescription)</span>
 </h1>
-
-
-
-
-
-
 @foreach (var item in Model.Items) {
     <div class="checkbox checkbox-success">
         <input id="@item.Name" onchange="ItemChecked('@item.Name', checked)" class="styled" type="checkbox" checked="@item.IsBought">
@@ -48,7 +43,7 @@
 }
 
 
-
+<!-- Save and cancel buttons -->
 <p>
     <button type="button" class="btn btn-success" onclick="Save()">Save</button>
     <a asp-controller="ShoppingList" asp-action="ViewShoppingLists" class="btn btn-danger">Cancel</a>

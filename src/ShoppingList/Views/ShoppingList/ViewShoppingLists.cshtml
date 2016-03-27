@@ -9,7 +9,7 @@
 </h1>
 
 <div class="list-group">
-    <a class="list-group-item" asp-controller="ShoppingList" asp-action="EditShoppingList">New...</a>
+    <a class="list-group-item" asp-controller="ShoppingList" asp-action="CreateShoppingList">New...</a>
 
 @foreach (var item in Model) {
     <a class="list-group-item" asp-controller="ShoppingList" asp-action="GoShopping" asp-route-id="@item.ID">@Html.DisplayFor(modelItem => item.LongDescription)</a>

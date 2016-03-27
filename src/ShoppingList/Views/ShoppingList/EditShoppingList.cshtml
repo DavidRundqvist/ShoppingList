@@ -1,24 +1,89 @@
-﻿@{
-    ViewData["Title"] = "View Shopping Lists";
+﻿@model ShoppingList.ViewModels.EditShoppingListViewModel
+@{
+    ViewData["Title"] = "Edit Shopping List";
 }
+
 
 
 <h1>
     <span class="label label-default">Edit Shopping List</span>
 </h1>
 
-<div class="dropdown">
-    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Store<span class="caret"></span></button>
-    <ul class="dropdown-menu">
-        <li><a href="#">Ica Maxi</a></li>
-        <li><a href="#">Coop Valla</a></li>
-        <li><a href="#">Hemköp</a></li>
-    </ul>
+
+<h3>Store:</h3>
+<select class="form-control">
+    @foreach (var store in Model.AvailableStores) {
+        <option>@store.Name</option>
+    }
+</select>
+
+<h3>Date:</h3>
+<div class="container">
+    <div class="row">
+        <div class='col-sm-6'>
+            <div class="form-group">
+                <div class='input-group date' id='datetimepicker1'>
+                    <input type='text' class="form-control" />
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript">
+            $(function () {
+                $('#datetimepicker1').datetimepicker({format: 'YYYY-MM-DD'});
+                $('#datetimepicker1').date("@Model.ShoppingDate.ToString("s")");
+            });
+        </script>
+    </div>
 </div>
 
-<div class="list-group">
-    <a href="#" class="list-group-item">Smör</a>
-    <a href="#" class="list-group-item">Bröd</a>
-    <a href="#" class="list-group-item">Ost</a>
+
+
+<script type="text/javascript">
+
+
+
+    function Click(itemName) {
+        var selectedGroup = document.getElementById('selectedGroup');
+        var availableGroup = document.getElementById('availableGroup');
+        var item = document.getElementById(itemName);
+
+        if (selectedGroup.contains(item)) {
+            availableGroup.appendChild(item);        
+        } else if (availableGroup.contains(item)) {
+            selectedGroup.appendChild(item);
+        }
+    }
+
+
+</script>
+
+
+<div class="container">
+
+    <!-- Available items -->
+    <div class="col-xs-6">
+        <div class="list-group" id="availableGroup">
+            <H3>Available</H3>
+            @foreach (var item in Model.AvailableItems) {
+                <a id="@item" onclick="Click('@item')" href="#" class="list-group-item">@item</a>
+            }
+        </div>
+    </div>
+
+    <!-- To buy -->
+    <div class="col-xs-6">
+        <div class="list-group" id="selectedGroup">
+            <H3>To buy</H3>
+            @foreach (var item in Model.SelectedItems) {
+                <a id="@item" onclick="Click('@item')" href="#" class="list-group-item">@item</a>
+            }
+        </div>
+    </div>
+
+
 </div>
+
 

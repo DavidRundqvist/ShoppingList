@@ -11,27 +11,31 @@ namespace ShoppingList.Services {
 
 
         public IEnumerable<string> GetItems() => _items.OrderBy(i => i).ToList();
-
-        public IEnumerable<Models.ShoppingList> GetAllShoppingLists() => _shoppingLists.OrderByDescending(s => s.Date).ToList();
-
-        public Models.ShoppingList GetShoppingList(Guid id) => _shoppingLists.Single(l => l.ID == id);
-
-        public IEnumerable<Store> GetStores() => _stores.OrderBy(s => s.Name).ToList();
-
-        public void Save(IEnumerable<string> items) {
+        public void Add(IEnumerable<string> items)
+        {
             var newItems = items.Concat(_items).Distinct().ToList();
             _items.Clear();
             _items.AddRange(newItems);
         }
+        public void Remove(IEnumerable<string> items)
+        {
+            foreach (var item in items)
+            {
+                _items.Remove(item);
+            }
+        }
 
-        public void Save(IEnumerable<Store> stores) {
-            var newStores = stores.Concat(_stores).Distinct().ToList();
-            _stores.Clear();
+        public IEnumerable<Store> GetStores() => _stores.OrderBy(s => s.Name).ToList();
+        public void Save(params Store[] stores) {
+            var newStores = stores.Except(_stores);
             _stores.AddRange(newStores);
         }
 
-        public void Save(IEnumerable<Models.ShoppingList> lists) {
-            _shoppingLists.AddRange(lists);
+        public IEnumerable<Models.ShoppingList> GetAllShoppingLists() => _shoppingLists.OrderByDescending(s => s.Date).ToList();
+        public Models.ShoppingList GetShoppingList(Guid id) => _shoppingLists.Single(l => l.ID == id);
+        public void Save(params Models.ShoppingList[] lists) {
+            var newLists = lists.Except(_shoppingLists);
+            _shoppingLists.AddRange(newLists);
         }
     }
 }
