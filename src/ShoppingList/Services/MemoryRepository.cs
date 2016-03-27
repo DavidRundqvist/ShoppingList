@@ -5,12 +5,12 @@ using ShoppingList.Models;
 
 namespace ShoppingList.Services {
     public class MemoryRepository : IRepository {
-        private readonly List<Item> _items = new List<Item>(); 
+        private readonly List<string> _items = new List<string>(); 
         private readonly List<Models.ShoppingList> _shoppingLists = new List<Models.ShoppingList>();
         private readonly List<Store> _stores = new List<Store>();
 
 
-        public IEnumerable<Item> GetItems() => _items.OrderBy(i => i.Name).ToList();
+        public IEnumerable<string> GetItems() => _items.OrderBy(i => i).ToList();
 
         public IEnumerable<Models.ShoppingList> GetAllShoppingLists() => _shoppingLists.OrderByDescending(s => s.Date).ToList();
 
@@ -18,7 +18,7 @@ namespace ShoppingList.Services {
 
         public IEnumerable<Store> GetStores() => _stores.OrderBy(s => s.Name).ToList();
 
-        public void Save(IEnumerable<Item> items) {
+        public void Save(IEnumerable<string> items) {
             var newItems = items.Concat(_items).Distinct().ToList();
             _items.Clear();
             _items.AddRange(newItems);

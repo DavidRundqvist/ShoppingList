@@ -6,25 +6,40 @@ using System.Linq;
 namespace ShoppingList.Models {
     public class ShoppingList {
         public Store Store { get; }
-        public Item[] Items { get; }
+        public Item[] Items { get; private set; }
         public DateTime Date { get; }
         public Guid ID { get; }
 
 
         public ShoppingList(Store store, Item[] items, DateTime date, Guid id) {
             Store = store;
-            Items = items;
+            Items = store.SuggestItemOrder(items);
             Date = date;
             ID = id;
         }
 
+        /// <summary>
+        /// Sorted list of bought items
+        /// </summary>
+        public IEnumerable<Item> BoughtItems => Items.Where(item => item.IsBought); 
 
         public string LongDescription => $"{Store.Name} @ {Date.ToString("d")}, {Items.Length} items";
         public string ShortDescription => $"{Store.Name} @ {Date.ToString("d")}";
 
-        public void Save(IEnumerable<string> itemNames) {
-            var items = itemNames.Join(Items, name => name, item => item.Name, (name, item) => item);
-            Store.CompleteShopping(items);
+        public void BuyItems(params string[] boughtItemNames) {
+            // order is important
+            var boughtItems = boughtItemNames.Join(Items, name => name, item => item.Name, (name, item) => item).ToList();
+            var nonBoughtItems = Items.Except(boughtItems).ToList();
+            foreach (var item in boughtItems) {
+                item.IsBought = true;
+            }
+            foreach (var item in nonBoughtItems) {
+                item.IsBought = false;
+            }
+
+            Items = nonBoughtItems.Concat(boughtItems).ToArray();
+
+            Store.BuyItems(this);
         }
     }
 }

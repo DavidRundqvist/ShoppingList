@@ -5,7 +5,7 @@ using ShoppingList.Models;
 
 namespace ShoppingList.Services {
     public interface IRepository {
-        IEnumerable<Item> GetItems();
+        IEnumerable<string> GetItems();
 
         IEnumerable<Models.ShoppingList> GetAllShoppingLists();
 
@@ -13,7 +13,7 @@ namespace ShoppingList.Services {
 
         IEnumerable<Store> GetStores();
 
-        void Save(IEnumerable<Item> items);
+        void Save(IEnumerable<string> items);
 
         void Save(IEnumerable<Store> stores);
 

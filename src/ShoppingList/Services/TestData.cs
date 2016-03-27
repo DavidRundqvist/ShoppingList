@@ -4,18 +4,16 @@ using ShoppingList.Common;
 
 namespace ShoppingList.Services {
     public class TestData {
-        private readonly ItemFactory _itemItemFactory;
         private readonly StoreFactory _storeFactory;
         private readonly ShoppingListFactory _shoppingListFactory;
 
-        public TestData(ItemFactory itemFactory, StoreFactory storeFactory, ShoppingListFactory _shoppingListFactory) {
-            _itemItemFactory = itemFactory;
+        public TestData(StoreFactory storeFactory, ShoppingListFactory shoppingListFactory) {
             _storeFactory = storeFactory;
-            this._shoppingListFactory = _shoppingListFactory;
+            _shoppingListFactory = shoppingListFactory;
         }
 
         public void InsertTestData(IRepository target) {
-            var items = _itemItemFactory.CreateItems("Mjölk", "Bröd", "Ost", "Smör", "Kaffe", "Bacon", "Bananer", "Skinka", "Tandkräm");
+            var items = new[] {"Mjölk", "Bröd", "Ost", "Smör", "Kaffe", "Bacon", "Bananer", "Skinka", "Tandkräm"};
             target.Save(items);
 
             var stores = _storeFactory.CreateStores("Coop Valla", "ICA Maxi", "City Gross", "Systembolaget");

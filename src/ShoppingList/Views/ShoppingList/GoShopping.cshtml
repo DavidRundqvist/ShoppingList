@@ -1,10 +1,12 @@
 ﻿@model ShoppingList.Models.ShoppingList
+@using Newtonsoft.Json
 @{
     ViewData["Title"] = "Go Shopping";
 }
 
 <script type="text/javascript">
-    var checkedItems = [];
+
+    var checkedItems = @Html.Raw(JsonConvert.SerializeObject(this.Model.BoughtItems.Select(item => item.Name).ToArray()));
 
     function ItemChecked(item, ischecked) {
         if (ischecked) {
@@ -19,9 +21,11 @@
     }
 
     function Save() {
-        var parameters = "shoppingListId=@Model.ID" + "&joinedItems=" + checkedItems.join("§");
-        var postUrl = "@Url.Action("Save", "ShoppingList")?" + parameters;
-        $.post(postUrl, function(data) {});
+        var parameters = "shoppingListId=@Model.ID" + "&boughtItemsJoined=" + checkedItems.join("§");
+        var postUrl = "@Url.Action("BuyItems", "ShoppingList")?" + parameters;
+        $.post(postUrl, function(data) {
+            window.location.href = '@Url.Action("ViewShoppingLists", "ShoppingList")';
+        });
     }
 </script>
 
@@ -36,8 +40,10 @@
 
 @foreach (var item in Model.Items) {
     <div class="checkbox checkbox-success">
-        <input id="@item.Name" onchange="ItemChecked('@item.Name', checked)" class="styled" type="checkbox">
-        <label for="@item.Name">@Html.DisplayFor(modelItem => item.Name)</label>
+        <input id="@item.Name" onchange="ItemChecked('@item.Name', checked)" class="styled" type="checkbox" checked="@item.IsBought">
+        <label for="@item.Name">
+            @Html.DisplayFor(modelItem => item.Name)
+        </label>
     </div>
 }
 

@@ -1,17 +1,21 @@
 ﻿using System;
 using System.Linq;
 using ShoppingList.Models;
-using ShoppingList = ShoppingList.Models.ShoppingList;
 
 namespace ShoppingList.Services {
+
     public class ShoppingListFactory {
-        public Models.ShoppingList Create(Store store, DateTime when, params Item[] items) {
-            return new Models.ShoppingList(store, items.ToArray(), when, Guid.NewGuid());
+        private readonly ItemFactory _itemFactory;
+        public ShoppingListFactory(ItemFactory itemFactory) {
+            _itemFactory = itemFactory;
         }
 
-        public Models.ShoppingList Create(Store store, DateTime when, Item[] items, Guid id) {
-            return new Models.ShoppingList(store, items, when, id);
+        public Models.ShoppingList Create(Store store, DateTime when, params string[] items) {
+            return Create(store, when, items, Guid.NewGuid());
+        }
 
+        public Models.ShoppingList Create(Store store, DateTime when, string[] items, Guid id) {
+            return new Models.ShoppingList(store, _itemFactory.CreateItems(items), when, id);
         }
     }
 }

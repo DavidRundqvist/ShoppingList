@@ -6,10 +6,10 @@ namespace ShoppingList.Models {
     public class Store : IEquatable<Store> {
         public string Name { get; private set; }
 
-        public Guid ID { get; private set; }
+        public Guid ID { get; }
 
-        private readonly List<Item> _orderedItems = new List<Item>(); 
-        public IReadOnlyList<Item> OrderedItems => _orderedItems;
+        private readonly List<string> _orderedItems = new List<string>(); 
+        public IReadOnlyList<string> OrderedItems => _orderedItems;
 
 
         public Store(string name, Guid id) {
@@ -17,13 +17,20 @@ namespace ShoppingList.Models {
             ID = id;
         }
 
-        public void CompleteShopping(IEnumerable<Item> newOrderedItems) {
-            newOrderedItems = newOrderedItems.ToList();
+        public Item[] SuggestItemOrder(Item[] items) {
+            var knownItems = _orderedItems.Join(items, name => name, item => item.Name, (name, item) => item).ToList();
+            var unknownItems = items.Except(knownItems);
+            return unknownItems.Concat(knownItems).ToArray();
+        }
+
+
+        public void BuyItems(ShoppingList list) {
+            var newOrderedItems = list.BoughtItems.Select(item => item.Name).ToList();
             if (!newOrderedItems.Any())
                 return;
 
-            var before = new List<Item>();
-            var after = new List<Item>();
+            var before = new List<string>();
+            var after = new List<string>();
 
             var foundIndex = _orderedItems.IndexOf(newOrderedItems.First());
             if (foundIndex >= 0) {
@@ -57,5 +64,6 @@ namespace ShoppingList.Models {
         public override int GetHashCode() {
             return ID.GetHashCode();
         }
+
     }
 }

@@ -28,13 +28,20 @@ namespace ShoppingList.Controllers
         }
 
         [HttpPost]
-        public IActionResult Save(Guid shoppingListId, string joinedItems) {
-            var itemNames = string.IsNullOrEmpty(joinedItems) ? Enumerable.Empty<string>() : joinedItems.Split('§');
+        public IActionResult BuyItems(Guid shoppingListId, string boughtItemsJoined) {
+            var boughtItemNames = string.IsNullOrEmpty(boughtItemsJoined) ? Enumerable.Empty<string>() : boughtItemsJoined.Split('§');
             var list = _repository.GetShoppingList(shoppingListId);
-            list.Save(itemNames);
+            list.BuyItems(boughtItemNames.ToArray());
 
             return new HttpOkResult();
         }
+
+        //[HttpPost]
+        //public IActionResult BuyItems(Models.ShoppingList list, string boughtItemsJoined) {
+        //    var boughtItemNames = string.IsNullOrEmpty(boughtItemsJoined) ? Enumerable.Empty<string>() : boughtItemsJoined.Split('§');
+        //    list.BuyItems(boughtItemNames.ToArray());
+        //    return new HttpOkResult();
+        //}
 
     }
 }
