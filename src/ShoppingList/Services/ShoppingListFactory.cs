@@ -10,15 +10,15 @@ namespace ShoppingList.Services {
             _itemFactory = itemFactory;
         }
 
-        public Models.ShoppingList Create(Store store, DateTime when, params string[] items) {
-            return Create(store, when, items, Guid.NewGuid());
+        public Models.ShoppingList Create(Store store, params string[] items) {
+            return Create(store, items, Guid.NewGuid());
         }
 
-        public Models.ShoppingList Create(Store store, DateTime when, string[] itemNames, Guid id) {
+        public Models.ShoppingList Create(Store store, string[] itemNames, Guid id) {
             var items = _itemFactory.CreateItems(itemNames);
             var itemOrder = store.SuggestItemOrder(items);
 
-            return new Models.ShoppingList(store, when, id, itemOrder);
+            return new Models.ShoppingList(store, id, itemOrder);
         }
     }
 }

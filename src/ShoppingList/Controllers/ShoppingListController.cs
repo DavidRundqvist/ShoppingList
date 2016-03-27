@@ -47,7 +47,7 @@ namespace ShoppingList.Controllers
             var store = _repository.GetStores().First(s => s.ID == storeId);
             var sl = _repository.GetShoppingList(shoppingListId);
             if (sl == null)             {
-                sl = _factory.Create(store, DateTime.Now, itemsToBuy.ToArray());
+                sl = _factory.Create(store, itemsToBuy.ToArray());
             }
 
             _repository.Save(sl);

@@ -7,18 +7,16 @@ namespace ShoppingList.Models {
     public class ShoppingList {
         public Store Store { get; }
         public Item[] Items { get; private set; }
-        public DateTime Date { get; }
         public Guid ID { get; }
 
 
-        public ShoppingList(Store store, DateTime date, Guid id, params string[] items)
-            : this(store, date, id, items.Select(name => new Item(name)).ToArray())
+        public ShoppingList(Store store,Guid id, params string[] items)
+            : this(store, id, items.Select(name => new Item(name)).ToArray())
         { } 
 
-        public ShoppingList(Store store, DateTime date, Guid id, params Item[] items) {
+        public ShoppingList(Store store, Guid id, params Item[] items) {
             Store = store;
             Items = items;
-            Date = date;
             ID = id;
         }
 
@@ -27,8 +25,8 @@ namespace ShoppingList.Models {
         /// </summary>
         public IEnumerable<Item> BoughtItems => Items.Where(item => item.IsBought); 
 
-        public string LongDescription => $"{Store.Name} @ {Date.ToString("d")}, {Items.Length} items";
-        public string ShortDescription => $"{Store.Name} @ {Date.ToString("d")}";
+        public string LongDescription => $"{Store.Name}, {Items.Length} items";
+        public string ShortDescription => $"{Store.Name}";
 
         public void BuyItems(params string[] boughtItemNames) {
             // order is important

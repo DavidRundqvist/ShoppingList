@@ -31,7 +31,7 @@ namespace ShoppingList.Services {
             _stores.AddRange(newStores);
         }
 
-        public IEnumerable<Models.ShoppingList> GetAllShoppingLists() => _shoppingLists.OrderByDescending(s => s.Date).ToList();
+        public IEnumerable<Models.ShoppingList> GetAllShoppingLists() => _shoppingLists.ToList();
         public Models.ShoppingList GetShoppingList(Guid id) => _shoppingLists.FirstOrDefault(l => l.ID == id);
         public void Save(params Models.ShoppingList[] lists) {
             var newLists = lists.Except(_shoppingLists);
