@@ -11,9 +11,13 @@ namespace ShoppingList.Models {
         public Guid ID { get; }
 
 
-        public ShoppingList(Store store, Item[] items, DateTime date, Guid id) {
+        public ShoppingList(Store store, DateTime date, Guid id, params string[] items)
+            : this(store, date, id, items.Select(name => new Item(name)).ToArray())
+        { } 
+
+        public ShoppingList(Store store, DateTime date, Guid id, params Item[] items) {
             Store = store;
-            Items = store.SuggestItemOrder(items);
+            Items = items;
             Date = date;
             ID = id;
         }

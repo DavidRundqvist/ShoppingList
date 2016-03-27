@@ -14,8 +14,11 @@ namespace ShoppingList.Services {
             return Create(store, when, items, Guid.NewGuid());
         }
 
-        public Models.ShoppingList Create(Store store, DateTime when, string[] items, Guid id) {
-            return new Models.ShoppingList(store, _itemFactory.CreateItems(items), when, id);
+        public Models.ShoppingList Create(Store store, DateTime when, string[] itemNames, Guid id) {
+            var items = _itemFactory.CreateItems(itemNames);
+            var itemOrder = store.SuggestItemOrder(items);
+
+            return new Models.ShoppingList(store, when, id, itemOrder);
         }
     }
 }
