@@ -35,7 +35,7 @@ namespace ShoppingList.Services {
         public Models.ShoppingList GetShoppingList(Guid id) => _shoppingLists.FirstOrDefault(l => l.ID == id);
         public void Save(params Models.ShoppingList[] lists) {
             var newLists = lists.Except(_shoppingLists);
-            _shoppingLists.AddRange(newLists);
+            _shoppingLists.InsertRange(0, newLists);
         }
     }
 }

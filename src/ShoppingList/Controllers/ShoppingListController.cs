@@ -19,7 +19,8 @@ namespace ShoppingList.Controllers
 
         public IActionResult ViewShoppingLists()
         {
-            return View(_repository.GetAllShoppingLists().ToList());
+            var allLists = _repository.GetAllShoppingLists().OrderBy(l => l.IsComplete);
+            return View(allLists.ToList());
         }
 
         public IActionResult CreateShoppingList() {

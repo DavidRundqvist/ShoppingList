@@ -8,11 +8,30 @@
     <span class="label label-default">Shopping Lists</span>
 </h1>
 
+<style>
+            div {
+                white-space: nowrap;
+            overflow: hidden;
+                text-overflow: ellipsis;
+            }
+</style>
+
 <div class="list-group">
-    <a class="list-group-item" asp-controller="ShoppingList" asp-action="CreateShoppingList">New...</a>
+    <a class="list-group-item" asp-controller="ShoppingList" asp-action="CreateShoppingList">
+        <h3 class="list-group-item-heading">New...</h3>
+    </a>
 
 @foreach (var item in Model) {
-    <a class="list-group-item" asp-controller="ShoppingList" asp-action="GoShopping" asp-route-id="@item.ID">@Html.DisplayFor(modelItem => item.LongDescription)</a>
+    <a class="list-group-item" asp-controller="ShoppingList" asp-action="GoShopping" asp-route-id="@item.ID">
+        @if (item.IsComplete)         {
+            <del style="color:lightgray; text-decoration: line-through">@item.Description <span class="badge pull-right">@item.Items.Count()</span></del>
+        }
+        else {
+            <span class="badge">@item.Items.Count()</span>
+            <h3 class="list-group-item-heading">@item.Description</h3>
+            <div style="font-size: 70%" class="list-group-item-text">@item.Text</div>
+        }
+    </a>
 }
 
 </div>

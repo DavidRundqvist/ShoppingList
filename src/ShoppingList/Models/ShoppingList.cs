@@ -10,6 +10,9 @@ namespace ShoppingList.Models {
         public Guid ID { get; }
 
 
+        public bool IsComplete => Items.All(item => item.IsBought);
+
+
         public ShoppingList(Store store,Guid id, params string[] items)
             : this(store, id, items.Select(name => new Item(name)).ToArray())
         { } 
@@ -23,10 +26,13 @@ namespace ShoppingList.Models {
         /// <summary>
         /// Sorted list of bought items
         /// </summary>
-        public IEnumerable<Item> BoughtItems => Items.Where(item => item.IsBought); 
+        public IEnumerable<Item> BoughtItems => Items.Where(item => item.IsBought);
 
-        public string LongDescription => $"{Store.Name}, {Items.Length} items";
-        public string ShortDescription => $"{Store.Name}";
+        public IEnumerable<Item> ItemsToBuy => Items.Where(item => !item.IsBought);
+
+        public string Description => Store.Name;
+
+        public string Text => string.Join(", ", Items.Select(i => i.Name));
 
         public void BuyItems(params string[] boughtItemNames) {
             // order is important
