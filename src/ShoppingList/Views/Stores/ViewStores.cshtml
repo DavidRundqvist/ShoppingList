@@ -1,12 +1,68 @@
 ﻿@model List<ShoppingList.Models.Store>
+@using Newtonsoft.Json
 @{
     ViewData["Title"] = "View Stores";
 }
 
-<h1>
-    <span class="label label-default">Stores</span>
-</h1>
+<script type="text/javascript">
+    var storeList = @Html.Raw(JsonConvert.SerializeObject(this.Model.Select(s => s.Name).ToArray()));
 
-@foreach (var item in Model) {
-    <div class="list-group-item">@Html.DisplayFor(modelItem => item.Name)</div>
-}
+    function CreateStore() {
+        var textField = document.getElementById('NewStoreField');
+        var storeName = textField.value;
+        textField.value = null;
+        if (storeName == null || storeName == "")
+            return;
+
+        storeName = storeName.toLowerCase();
+        var existingField = document.getElementById(storeName);
+        if (existingField != null)
+            return;
+
+        // create new element
+        @*Template: <div id="@item.Name" class="list-group-item">@item.Name</div>*@
+        var element = document.createElement('div');
+        element.textContent = storeName;
+        element.setAttribute('class', 'list-group-item');
+        element.setAttribute('id', storeName);
+
+        storeList.push(storeName);
+        var storeGroup = document.getElementById('stores');
+        storeGroup.appendChild(element);
+    }
+
+    function Save() {
+        var parameters = "storesJoined=" + storeList.join("§");
+        var postUrl = "@Url.Action("SaveStores", "Stores")?" + parameters;
+        $.post(postUrl, function(data) {
+            window.location.href = "@Url.Action("ViewShoppingLists", "ShoppingList")";
+        });
+    }
+</script>
+
+
+<h2>
+    <span class="label label-default">Stores</span>
+    <button type="button" class="btn btn-success" onclick="Save()">Save</button>
+    <a asp-controller="ShoppingList" asp-action="ViewShoppingLists" class="btn btn-danger">Cancel</a>
+</h2>
+
+<div class="container">
+    <div class='col-xs-12'>
+        <h3>New Store</h3>
+        <div class="input-group">
+            <input id="NewStoreField" type="text" class="form-control" placeholder="walmart..."
+                   onkeydown="if (event.keyCode == 13) CreateStore()" />
+            <span class="input-group-btn">
+                <button class="btn btn-default" type="button" onclick="CreateStore()">Add!</button>
+            </span>
+        </div>
+
+        <h3>Stores</h3>
+        <div class="list-group" id="stores">
+            @foreach (var item in Model) {
+                <div id="@item.Name" class="list-group-item">@item.Name</div>
+            }
+        </div>
+    </div>
+</div>

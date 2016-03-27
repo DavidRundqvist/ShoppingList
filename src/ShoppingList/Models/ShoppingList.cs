@@ -5,47 +5,40 @@ using System.Linq;
 
 namespace ShoppingList.Models {
     public class ShoppingList {
-        public Store Store { get; }
-        public Item[] Items { get; private set; }
+        private Item[] _items;
+
+        public Store Store { get; set; }
         public Guid ID { get; }
 
+        public IEnumerable<Item> BoughtItems => _items.Where(item => item.IsBought);
+        public IEnumerable<Item> ItemsToBuy => _items.Where(item => !item.IsBought);
+        public IEnumerable<Item> AllItems => ItemsToBuy.Concat(BoughtItems);
 
-        public bool IsComplete => Items.All(item => item.IsBought);
-
-
+        public bool IsComplete => AllItems.All(item => item.IsBought);
+        
         public ShoppingList(Store store,Guid id, params string[] items)
             : this(store, id, items.Select(name => new Item(name)).ToArray())
         { } 
 
         public ShoppingList(Store store, Guid id, params Item[] items) {
             Store = store;
-            Items = items;
+            _items = items;
             ID = id;
         }
 
-        /// <summary>
-        /// Sorted list of bought items
-        /// </summary>
-        public IEnumerable<Item> BoughtItems => Items.Where(item => item.IsBought);
-
-        public IEnumerable<Item> ItemsToBuy => Items.Where(item => !item.IsBought);
-
         public string Description => Store.Name;
 
-        public string Text => string.Join(", ", Items.Select(i => i.Name));
+        public string Text => string.Join(", ", AllItems.Select(i => i.Name));
 
         public void BuyItems(params string[] boughtItemNames) {
-            // order is important
-            var boughtItems = boughtItemNames.Join(Items, name => name, item => item.Name, (name, item) => item).ToList();
-            var nonBoughtItems = Items.Except(boughtItems).ToList();
+            var boughtItems = boughtItemNames.Join(_items, name => name, item => item.Name, (name, item) => item).ToList();
+            var itemsToBuy = _items.Except(boughtItems);
             foreach (var item in boughtItems) {
                 item.IsBought = true;
             }
-            foreach (var item in nonBoughtItems) {
+            foreach(var item in itemsToBuy) {
                 item.IsBought = false;
             }
-
-            Items = nonBoughtItems.Concat(boughtItems).ToArray();
-        }
+        }       
     }
 }

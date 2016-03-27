@@ -30,18 +30,52 @@
 
 
     function Save() {
-        var parameters = "shoppingListId=" + "@Model.ShopplingListId.ToString()" + "&storeId=" + "@Model.SelectedStore.ID" + "&itemsToBuyJoined="  + selectedItems.join("§");
+        var store = document.getElementById("StoreSelection").value;
+        if (store == null || store == "") {
+            var warning = document.getElementById("SelectStoreWarning");
+            warning.textContent = "Select a store";
+            return;
+        }
+
+        var parameters = "shoppingListId=" + "@Model.ShopplingListId.ToString()" + "&storeName=" + store + "&itemsToBuyJoined="  + selectedItems.join("§");
         var postUrl = "@Url.Action("SaveShoppingList", "ShoppingList")?" + parameters;
         $.post(postUrl, function(data) {
             window.location.href = "@Url.Action("ViewShoppingLists", "ShoppingList")";
         });
     }
+
+    function CreateItem() {
+        var textField = document.getElementById('NewItemField');
+        var itemName = textField.value;
+        textField.value = null;
+        if (itemName == null || itemName == "")
+            return;
+
+        itemName = itemName.toLowerCase();
+
+        var existingField = document.getElementById(itemName);
+        if (existingField != null) {
+            Click(itemName);
+            return;
+        }
+
+        // create new element
+        @*Template: <a id="@item" onclick="Click('@item'); return false;" href="#" class="list-group-item">@item</a>*@
+        var element = document.createElement('a');
+        element.textContent = itemName;
+        element.setAttribute('class', 'list-group-item');
+        element.setAttribute('onclick', 'Click("' + itemName + '"); return false;');
+        element.setAttribute('href', '#');
+        element.setAttribute('id', itemName);
+
+        selectedItems.push(itemName);
+        var selectedGroup = document.getElementById('selectedGroup');
+        selectedGroup.appendChild(element);
+    }
 </script>
 
-
-
 <h2>
-    <span class="label label-default">Edit Shopping List</span>
+    <span class="label label-default">New List</span>
     <button type="button" class="btn btn-success" onclick="Save()">Save</button>
     <a asp-controller="ShoppingList" asp-action="ViewShoppingLists" class="btn btn-danger">Cancel</a>
 </h2>
@@ -50,11 +84,22 @@
     <div class="row">
         <div class='col-xs-6'>
             <h3>Store</h3>
-            <select class="form-control">
+            <select class="form-control" id="StoreSelection">
                 @foreach (var store in Model.AvailableStores) {
                     <option>@store.Name</option>
                 }
             </select>
+            <span id="SelectStoreWarning" class="label label-danger"></span>
+        </div>
+        <div class='col-xs-6'>
+            <h3>New Item</h3>
+            <div class="input-group">
+                <input id="NewItemField" type="text" class="form-control" placeholder="chocolate..."
+                     onkeydown="if (event.keyCode == 13) CreateItem()" />
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="button" onclick="CreateItem()">Add!</button>
+                </span>
+            </div>
         </div>
     </div>
 
@@ -64,9 +109,8 @@
         <div class="col-xs-6">
             <div class="list-group" id="availableGroup">
                 <H3>Items</H3>
-                @foreach (var item in Model.AvailableItems)
-                {
-                    <a id="@item" onclick="Click('@item')" href="#" class="list-group-item">@item</a>
+                @foreach (var item in Model.AvailableItems) {
+                    <a id="@item" onclick="Click('@item'); return false;" href="#" class="list-group-item">@item</a>
                 }
             </div>
         </div>
@@ -74,11 +118,10 @@
         <!-- To buy -->
         <div class="col-xs-6">
             <div class="list-group" id="selectedGroup">
-                <H3>To buy</H3>
-                @foreach (var item in Model.SelectedItems)
-                {
-                    <a id="@item" onclick="Click('@item')" href="#" class="list-group-item">@item</a>
-                }
+                <H3>To Buy</H3>
+                @foreach (var item in Model.SelectedItems) {
+                    <a id="@item" onclick="Click('@item'); return false;" href="#" class="list-group-item">@item</a>
+                }                
             </div>
         </div>
     </div>

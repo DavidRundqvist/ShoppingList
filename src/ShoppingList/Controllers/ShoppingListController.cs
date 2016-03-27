@@ -11,10 +11,12 @@ namespace ShoppingList.Controllers
     public class ShoppingListController : Controller {
         private readonly IRepository _repository;
         private readonly ShoppingListFactory _factory;
+        private readonly StoreFactory _storeFactory;
 
-        public ShoppingListController(IRepository repository, ShoppingListFactory factory) {
+        public ShoppingListController(IRepository repository, ShoppingListFactory factory, StoreFactory storeFactory) {
             _repository = repository;
             _factory = factory;
+            _storeFactory = storeFactory;
         }
 
         public IActionResult ViewShoppingLists()
@@ -40,45 +42,50 @@ namespace ShoppingList.Controllers
             return View(_repository.GetShoppingList(id.Value));
         }
 
+        private string[] GetItems(string joinedItemsString)
+        {
+            return (string.IsNullOrEmpty(joinedItemsString) ? Enumerable.Empty<string>() : joinedItemsString.Split('§')).ToArray();
+        }
 
         [HttpPost]
-        public IActionResult SaveShoppingList(Guid shoppingListId, Guid storeId, string itemsToBuyJoined)
+        public IActionResult SaveShoppingList(Guid shoppingListId, string storeName, string itemsToBuyJoined)
         {
-            var itemsToBuy = string.IsNullOrEmpty(itemsToBuyJoined) ? Enumerable.Empty<string>() : itemsToBuyJoined.Split('§');
-            var store = _repository.GetStores().First(s => s.ID == storeId);
+            var itemsToBuy = GetItems(itemsToBuyJoined);
+            var store = _repository.GetStores().FirstOrDefault(s => s.Name == storeName);
+            if (store == null) {
+                store = _storeFactory.CreateStores(storeName).First();
+            }
             var sl = _repository.GetShoppingList(shoppingListId);
             if (sl == null)             {
                 sl = _factory.Create(store, itemsToBuy.ToArray());
             }
 
+            // update shoppinglist (todo: replace items)
+            sl.Store = store;
             _repository.Save(sl);
+
+            // úpdate items
+            _repository.Add(itemsToBuy);
+
+            // update stores
+            _repository.Save(store);
             return new HttpOkResult();
-
         }
-
 
         [HttpPost]
         public IActionResult BuyItems(Guid shoppingListId, string boughtItemsJoined) {
-            var boughtItemNames = string.IsNullOrEmpty(boughtItemsJoined) ? Enumerable.Empty<string>() : boughtItemsJoined.Split('§');
+            var boughtItemNames = GetItems(boughtItemsJoined);
 
             // update shopping list
             var list = _repository.GetShoppingList(shoppingListId);
-            list.BuyItems(boughtItemNames.ToArray());
+            list.BuyItems(boughtItemNames);
             _repository.Save(list);
 
             // update store
-            list.Store.BuyItems(list);
+            list.Store.BuyItems(boughtItemNames);
             _repository.Save(list.Store);
 
             return new HttpOkResult();
         }
-
-        //[HttpPost]
-        //public IActionResult BuyItems(Models.ShoppingList list, string boughtItemsJoined) {
-        //    var boughtItemNames = string.IsNullOrEmpty(boughtItemsJoined) ? Enumerable.Empty<string>() : boughtItemsJoined.Split('§');
-        //    list.BuyItems(boughtItemNames.ToArray());
-        //    return new HttpOkResult();
-        //}
-
     }
 }

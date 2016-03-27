@@ -24,24 +24,23 @@ namespace ShoppingList.Models {
         }
 
 
-        public void BuyItems(ShoppingList list) {
-            var newOrderedItems = list.BoughtItems.Select(item => item.Name).ToList();
-            if (!newOrderedItems.Any())
+        public void BuyItems(params string[] boughtItems) {
+            if (!boughtItems.Any())
                 return;
 
             var before = new List<string>();
             var after = new List<string>();
 
-            var foundIndex = _orderedItems.IndexOf(newOrderedItems.First());
+            var foundIndex = _orderedItems.IndexOf(boughtItems.First());
             if (foundIndex >= 0) {
-                before = _orderedItems.Take(foundIndex).Except(newOrderedItems).ToList();
-                after = _orderedItems.Except(before).Except(newOrderedItems).ToList();
+                before = _orderedItems.Take(foundIndex).Except(boughtItems).ToList();
+                after = _orderedItems.Except(before).Except(boughtItems).ToList();
             }
             else {
                 after = _orderedItems.ToList();
             }
 
-            var allItems = before.Concat(newOrderedItems).Concat(after);
+            var allItems = before.Concat(boughtItems).Concat(after);
 
             // make switch:
             _orderedItems.Clear();

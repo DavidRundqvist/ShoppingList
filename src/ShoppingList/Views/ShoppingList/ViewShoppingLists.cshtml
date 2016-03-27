@@ -4,16 +4,16 @@
 }
 
 
-<h1>
+<h2>
     <span class="label label-default">Shopping Lists</span>
-</h1>
+</h2>
 
 <style>
-            div {
-                white-space: nowrap;
-            overflow: hidden;
-                text-overflow: ellipsis;
-            }
+    div {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 </style>
 
 <div class="list-group">
@@ -21,15 +21,16 @@
         <h3 class="list-group-item-heading">New...</h3>
     </a>
 
-@foreach (var item in Model) {
-    <a class="list-group-item" asp-controller="ShoppingList" asp-action="GoShopping" asp-route-id="@item.ID">
-        @if (item.IsComplete)         {
-            <del style="color:lightgray; text-decoration: line-through">@item.Description <span class="badge pull-right">@item.Items.Count()</span></del>
+@foreach (var list in Model) {
+    <a class="list-group-item" asp-controller="ShoppingList" asp-action="GoShopping" asp-route-id="@list.ID">
+        @if (list.IsComplete) {
+            <span class="glyphicon glyphicon-ok" style="color:lightgray" aria-hidden="true"></span>
+            <span style="color:lightgray;">@list.Description <span class="badge pull-right">@list.AllItems.Count()</span></span>
         }
         else {
-            <span class="badge">@item.Items.Count()</span>
-            <h3 class="list-group-item-heading">@item.Description</h3>
-            <div style="font-size: 70%" class="list-group-item-text">@item.Text</div>
+            <span class="badge">@list.AllItems.Count()</span>
+            <h3 class="list-group-item-heading">@list.Description</h3>
+            <div style="font-size: 70%" class="list-group-item-text">@list.Text</div>
         }
     </a>
 }

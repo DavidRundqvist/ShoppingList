@@ -22,13 +22,11 @@ namespace Test.Models {
         [Test]
         public void Should_store_sorted_items() {
             // arrange
-            var oldList = new ShoppingList.Models.ShoppingList(_sut, Guid.NewGuid(), "E", "F", "A", "B", "D", "G", "C");
-            foreach (var item in oldList.Items) { item.IsBought = true; }
+            var oldList = new[] { "E", "F", "A", "B", "D", "G", "C" };
             _sut.BuyItems(oldList);
 
             // act
-            var newList = new ShoppingList.Models.ShoppingList(_sut, Guid.NewGuid(), "B", "C", "D", "E");
-            foreach (var item in newList.Items) { item.IsBought = true; }
+            var newList = new[] { "B", "C", "D", "E" };
             _sut.BuyItems(newList);
 
             // assert

@@ -41,7 +41,7 @@
 
 
 
-@foreach (var item in Model.Items) {
+@foreach (var item in Model.AllItems) {
     <div class="checkbox checkbox-success">
         <input id="@item.Name" onchange="ItemChecked('@item.Name', checked)" class="styled" type="checkbox" checked="@item.IsBought">
         <label for="@item.Name">
