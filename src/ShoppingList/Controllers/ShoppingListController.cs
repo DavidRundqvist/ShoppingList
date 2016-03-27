@@ -10,8 +10,11 @@ namespace ShoppingList.Controllers
 {
     public class ShoppingListController : Controller {
         private readonly IRepository _repository;
-        public ShoppingListController(IRepository repository) {
+        private readonly ShoppingListFactory _factory;
+
+        public ShoppingListController(IRepository repository, ShoppingListFactory factory) {
             _repository = repository;
+            _factory = factory;
         }
 
         public IActionResult ViewShoppingLists()
@@ -24,7 +27,7 @@ namespace ShoppingList.Controllers
                                                                     AvailableItems = _repository.GetItems().ToArray(),
                                                                     AvailableStores = _repository.GetStores().ToArray(),
                                                                     SelectedItems = new string[0],
-                                                                    SelectedStore = null,
+                                                                    SelectedStore = _repository.GetStores().First(),
                                                                     ShoppingDate = DateTime.Today + TimeSpan.FromDays(1),
                                                                     ShopplingListId = Guid.NewGuid()
                                                                 };
@@ -35,6 +38,23 @@ namespace ShoppingList.Controllers
         public IActionResult GoShopping(Guid? id) {
             return View(_repository.GetShoppingList(id.Value));
         }
+
+
+        [HttpPost]
+        public IActionResult SaveShoppingList(Guid shoppingListId, Guid storeId, string itemsToBuyJoined)
+        {
+            var itemsToBuy = string.IsNullOrEmpty(itemsToBuyJoined) ? Enumerable.Empty<string>() : itemsToBuyJoined.Split('§');
+            var store = _repository.GetStores().First(s => s.ID == storeId);
+            var sl = _repository.GetShoppingList(shoppingListId);
+            if (sl == null)             {
+                sl = _factory.Create(store, DateTime.Now, itemsToBuy.ToArray());
+            }
+
+            _repository.Save(sl);
+            return new HttpOkResult();
+
+        }
+
 
         [HttpPost]
         public IActionResult BuyItems(Guid shoppingListId, string boughtItemsJoined) {
