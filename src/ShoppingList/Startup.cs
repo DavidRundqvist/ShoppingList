@@ -1,8 +1,12 @@
-﻿using Microsoft.AspNet.Builder;
+﻿using System.IO;
+using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.PlatformAbstractions;
+using Newtonsoft.Json;
+using ShoppingList.DataAccess;
 using ShoppingList.Services;
 
 namespace ShoppingList
@@ -44,18 +48,28 @@ namespace ShoppingList
             services.AddMvc();
 
             // Add application services.
+            services.AddTransient<JsonSerializer>();
             services.AddTransient<ItemFactory>();
             services.AddTransient<StoreFactory>();
             services.AddTransient<ShoppingListFactory>();
             services.AddTransient<TestData>();
-            services.AddSingleton<IRepository>(sp => {
-                                                   var result = new MemoryRepository();
-                                                   var env = sp.GetService<IHostingEnvironment>();
-                                                   if (env.IsDevelopment()) {
-                                                       sp.GetService<TestData>().InsertTestData(result);
-                                                   }
-                                                   return result;
-                                               });
+            services.AddSingleton<IRepository>(sp =>
+            {
+                var root = sp.GetService<IApplicationEnvironment>().ApplicationBasePath;
+                var dataPath = Path.Combine(root, "../../../ShoppingListData");
+
+                return new JsonFileRepository(
+                    new DirectoryInfo(dataPath),
+                    sp.GetService<JsonSerializer>());
+            });
+            //services.AddSingleton<IRepository>(sp => {
+            //                                       var result = new MemoryRepository();
+            //                                       var env = sp.GetService<IHostingEnvironment>();
+            //                                       if (env.IsDevelopment()) {
+            //                                           sp.GetService<TestData>().InsertTestData(result);
+            //                                       }
+            //                                       return result;
+            //                                   });
 
             //services.AddTransient<IEmailSender, AuthMessageSender>();
             //services.AddTransient<ISmsSender, AuthMessageSender>();
