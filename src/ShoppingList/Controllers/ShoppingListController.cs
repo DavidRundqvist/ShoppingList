@@ -10,12 +10,10 @@ namespace ShoppingList.Controllers
 {
     public class ShoppingListController : Controller {
         private readonly IRepository _repository;
-        private readonly ShoppingListFactory _factory;
         private readonly StoreFactory _storeFactory;
 
-        public ShoppingListController(IRepository repository, ShoppingListFactory factory, StoreFactory storeFactory) {
+        public ShoppingListController(IRepository repository, StoreFactory storeFactory) {
             _repository = repository;
-            _factory = factory;
             _storeFactory = storeFactory;
         }
 
@@ -25,15 +23,38 @@ namespace ShoppingList.Controllers
             return View(allLists.ToList());
         }
 
-        public IActionResult CreateShoppingList() {
-            var editViewModel = new EditShoppingListViewModel() {
-                                                                    AvailableItems = _repository.GetItems().ToArray(),
-                                                                    AvailableStores = _repository.GetStores().ToArray(),
-                                                                    SelectedItems = new string[0],
-                                                                    SelectedStore = _repository.GetStores().First(),
-                                                                    ShoppingDate = DateTime.Today + TimeSpan.FromDays(1),
-                                                                    ShopplingListId = Guid.NewGuid()
-                                                                };
+        public IActionResult CreateShoppingList()
+        {
+            var stores = _repository.GetStores().OrderBy(s => s.Name).ToArray();
+            var editViewModel = new EditShoppingListViewModel()
+            {
+                Header = "New List",
+                AvailableItems = _repository.GetItems().OrderBy(n => n).ToArray(),
+                AvailableStores = stores,
+                SelectedItems = new string[0],
+                SelectedStore = stores.First(),
+                ShopplingListId = Guid.NewGuid()
+            };
+
+            return View("EditShoppingList", editViewModel);
+        }
+
+        public IActionResult EditShoppingList(Guid id)
+        {
+            var stores = _repository.GetStores().OrderBy(s => s.Name).ToArray();
+            var sl = _repository.GetShoppingList(id);
+            var selectedItems = sl.AllItems.Select(i => i.Name).ToArray();
+            var availableItems = _repository.GetItems().Except(selectedItems).OrderBy(i => i).ToArray();
+
+            var editViewModel = new EditShoppingListViewModel()
+            {
+                Header = "Edit List",
+                AvailableItems = availableItems,
+                AvailableStores = stores,
+                SelectedItems = selectedItems,
+                SelectedStore = sl.Store,
+                ShopplingListId = sl.ID
+            };
 
             return View("EditShoppingList", editViewModel);
         }
@@ -56,19 +77,19 @@ namespace ShoppingList.Controllers
                 store = _storeFactory.CreateStores(storeName).First();
             }
             var sl = _repository.GetShoppingList(shoppingListId);
-            if (sl == null)             {
-                sl = _factory.Create(store, itemsToBuy.ToArray());
+            if (sl == null) {
+                sl = new Models.ShoppingList(store);
             }
 
-            // update shoppinglist (todo: replace items)
+            // update shoppinglist
+            itemsToBuy = store.SuggestItemOrder(itemsToBuy);
             sl.Store = store;
+            sl.ReplaceItems(itemsToBuy);
             _repository.Save(sl);
 
             // úpdate items
             _repository.Add(itemsToBuy);
 
-            // update stores
-            _repository.Save(store);
             return new HttpOkResult();
         }
 

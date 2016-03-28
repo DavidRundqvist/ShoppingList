@@ -31,14 +31,13 @@
 
 
 <h2>
-    <span class="label label-default">@Html.DisplayFor(modelItem => Model.Description)</span>
-    <button type="button" class="btn btn-success" onclick="Save()">Save</button>
-    <a asp-controller="ShoppingList" asp-action="ViewShoppingLists" class="btn btn-danger">Cancel</a>
+    <span class="label label-default">@Model.Description</span>
 </h2>
-
-
-
-
+<div>
+    <button type="button" class="btn btn-success" onclick="Save()">Save</button>
+    <a asp-controller="ShoppingList" asp-action="EditShoppingList" asp-route-id="@Model.ID" class="btn btn-default">Edit</a>
+    <a asp-controller="ShoppingList" asp-action="ViewShoppingLists" class="btn btn-danger">Cancel</a>
+</div>
 
 
 @foreach (var item in Model.AllItems) {

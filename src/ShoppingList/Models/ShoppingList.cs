@@ -6,7 +6,7 @@ using System.Linq;
 namespace ShoppingList.Models {
     public class ShoppingList : IEquatable<ShoppingList>
     {
-        private readonly Item[] _items;
+        private readonly List<Item> _items;
 
         public Store Store { get; set; }
         public Guid ID { get; }
@@ -16,14 +16,24 @@ namespace ShoppingList.Models {
         public IEnumerable<Item> AllItems => ItemsToBuy.Concat(BoughtItems);
 
         public bool IsComplete => AllItems.All(item => item.IsBought);
-        
-        public ShoppingList(Store store,Guid id, params string[] items)
-            : this(store, id, items.Select(name => new Item(name)).ToArray())
-        { } 
 
-        public ShoppingList(Store store, Guid id, params Item[] items) {
+
+        /// <summary>
+        /// Creates a new shopping list
+        /// </summary>
+        public ShoppingList(Store store) {
             Store = store;
-            _items = items;
+            ID = Guid.NewGuid();
+            _items = new List<Item>();
+        }
+
+        /// <summary>
+        /// Recreates a shopping list
+        /// </summary>
+        public ShoppingList(Store store, Guid id, IEnumerable<Item> items)
+        {
+            _items = items.ToList();
+            Store = store;
             ID = id;
         }
 
@@ -60,6 +70,13 @@ namespace ShoppingList.Models {
         public override int GetHashCode()
         {
             return ID.GetHashCode();
+        }
+
+        public void ReplaceItems(params string[] itemsToBuy)
+        {
+            var currentItems = _items.ToDictionary(item => item.Name);
+            _items.Clear();
+            _items.AddRange(itemsToBuy.Select(name => currentItems.ContainsKey(name) ? currentItems[name] : new Item(name)));
         }
     }
 }

@@ -49,9 +49,7 @@ namespace ShoppingList
 
             // Add application services.
             services.AddTransient<JsonSerializer>();
-            services.AddTransient<ItemFactory>();
             services.AddTransient<StoreFactory>();
-            services.AddTransient<ShoppingListFactory>();
             services.AddTransient<TestData>();
             services.AddSingleton<IRepository>(sp =>
             {

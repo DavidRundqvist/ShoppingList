@@ -3,6 +3,7 @@ using ShoppingList.Models;
 
 namespace ShoppingList.ViewModels {
     public class EditShoppingListViewModel {
+        public string Header { get; set; }
         public Store[] AvailableStores { get; set; } 
         public Store SelectedStore { get; set; }
 
@@ -10,7 +11,6 @@ namespace ShoppingList.ViewModels {
         public string[] SelectedItems { get; set; }
 
         public Guid ShopplingListId { get; set; }
-        public DateTime ShoppingDate { get; set; }
 
     }
 }

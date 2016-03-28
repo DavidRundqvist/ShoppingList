@@ -13,7 +13,7 @@ namespace ShoppingList.Controllers {
         }
 
         public IActionResult ViewStores() {
-            var stores = _repository.GetStores().ToList();
+            var stores = _repository.GetStores().OrderBy(s => s.Name).ToList();
             return View(stores);
         }
 

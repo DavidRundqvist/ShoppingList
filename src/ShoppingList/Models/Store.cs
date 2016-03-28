@@ -17,8 +17,9 @@ namespace ShoppingList.Models {
             ID = id;
         }
 
-        public Item[] SuggestItemOrder(Item[] items) {
-            var knownItems = _orderedItems.Join(items, name => name, item => item.Name, (name, item) => item).ToList();
+        public string[] SuggestItemOrder(params string[] items)
+        {
+            var knownItems = _orderedItems.Intersect(items).ToArray();
             var unknownItems = items.Except(knownItems);
             return unknownItems.Concat(knownItems).ToArray();
         }

@@ -14,13 +14,14 @@ namespace Test.Models
         [SetUp]
         public void Setup()
         {
-            _sut = new ShoppingList.Models.ShoppingList(new ShoppingList.Models.Store("Coop", Guid.NewGuid()), Guid.NewGuid(), "Bröd", "Kaffe", "Chips");
+            _sut = new ShoppingList.Models.ShoppingList(new ShoppingList.Models.Store("Coop", Guid.NewGuid()));
         }
 
         [Test]
         public void Should_be_completed_when_all_items_are_bought()
         {
             // arrange
+            _sut.ReplaceItems("Bröd", "Kaffe", "Chips");
 
             // act
             _sut.BuyItems("Bröd", "Kaffe", "Chips");

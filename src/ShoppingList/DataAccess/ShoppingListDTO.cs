@@ -27,11 +27,12 @@ namespace ShoppingList.DataAccess
 
         public static Models.ShoppingList ToModel(this ShoppingListDTO dto, List<Store> stores)
         {
-            return new Models.ShoppingList(stores.First(s => s.ID == dto.StoreId),                 
-                dto.ID, dto.Items.Select(i => i.ToModel()).ToArray());
+            var result = new Models.ShoppingList(
+                stores.First(s => s.ID == dto.StoreId),
+                dto.ID, 
+                dto.Items.Select(i => i.ToModel()));
+            return result;
         }
-
-
     }
 
 

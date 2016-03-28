@@ -74,11 +74,12 @@
     }
 </script>
 
-<h2>
-    <span class="label label-default">New List</span>
+<h2><span class="label label-default">@Model.Header</span></h2>
+
+<div>
     <button type="button" class="btn btn-success" onclick="Save()">Save</button>
     <a asp-controller="ShoppingList" asp-action="ViewShoppingLists" class="btn btn-danger">Cancel</a>
-</h2>
+</div>
 
 <div class="container">
     <div class="row">
@@ -86,7 +87,7 @@
             <h3>Store</h3>
             <select class="form-control" id="StoreSelection">
                 @foreach (var store in Model.AvailableStores) {
-                    <option>@store.Name</option>
+                    <option selected="@Model.SelectedStore.Name.Equals(store.Name)">@store.Name</option>
                 }
             </select>
             <span id="SelectStoreWarning" class="label label-danger"></span>

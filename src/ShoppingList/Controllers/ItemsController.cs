@@ -14,7 +14,7 @@ namespace ShoppingList.Controllers
         }
 
         public IActionResult ViewItems() {
-            var items = _repository.GetItems().ToList();
+            var items = _repository.GetItems().OrderBy(i => i).ToList();
             return View(items);
         }
     }
