@@ -6,21 +6,45 @@
 
 <script type="text/javascript">
 
-    var checkedItems = @Html.Raw(JsonConvert.SerializeObject(this.Model.BoughtItems.Select(item => item.Name).ToArray()));
+    var boughtItems = @Html.Raw(JsonConvert.SerializeObject(this.Model.BoughtItems.Select(item => item.Name).ToArray()));
 
-    function ItemChecked(item, ischecked) {
-        if (ischecked) {
-            checkedItems.push(item);
+    var isDirty = false;
+
+    // http://stackoverflow.com/questions/7317273/warn-user-before-leaving-web-page-with-unsaved-changes
+    window.onload = function() {
+        window.addEventListener("beforeunload", function (e) {
+            if (!isDirty)
+                return undefined;
+            var message = 'You have unsaved changes. If you leave before saving, your changes will be lost.';
+            (e || window.event).returnValue = message;
+            return message;
+        });
+    };
+
+    function Click(item) {
+        isDirty = true;
+        var element = document.getElementById(item);
+        var index = boughtItems.indexOf(item);
+        if (index >= 0) {
+            // Unbuy
+            var toBuyGroup = document.getElementById("ToBuyGroup");
+            boughtItems.splice(index, 1);
+            toBuyGroup.appendChild(element);
+            element.style = "color: black";
+            element.querySelector("#checkmark").style = "color: inherit; visibility:collapse";
         } else {
-            var index = checkedItems.indexOf(item);
-            if (index >= 0) {
-                checkedItems.splice(index, 1);
-            }
+            // Buy
+            var boughtGroup = document.getElementById("BoughtGroup");
+            boughtItems.push(item);
+            boughtGroup.appendChild(element);
+            element.style = "color: lightgray";
+            element.querySelector("#checkmark").style = "color: inherit; visibility:visible";
         }
     }
 
     function Save() {
-        var parameters = "shoppingListId=@Model.ID" + "&boughtItemsJoined=" + checkedItems.join("§");
+        isDirty = false;
+        var parameters = "shoppingListId=@Model.ID" + "&boughtItemsJoined=" + boughtItems.join("§");
         var postUrl = "@Url.Action("BuyItems", "ShoppingList")?" + parameters;
         $.post(postUrl, function(data) {
             window.location.href = '@Url.Action("ViewShoppingLists", "ShoppingList")';
@@ -40,15 +64,27 @@
 </div>
 
 
-@foreach (var item in Model.AllItems) {
-    <div class="checkbox checkbox-success">
-        <input id="@item.Name" onchange="ItemChecked('@item.Name', checked)" class="styled" type="checkbox" checked="@item.IsBought">
-        <label for="@item.Name">
-            @Html.DisplayFor(modelItem => item.Name)
-        </label>
-    </div>
-}
+<!-- To buy -->
+<div class="list-group" id="ToBuyGroup">
+    <H3>To Buy</H3>
+    @foreach (var item in Model.ItemsToBuy) {
+        <a id="@item.Name" onclick="Click('@item.Name'); return false;" href="#" class="list-group-item" style="color: black">
+            <span id="checkmark" class="glyphicon glyphicon-ok" style="color: inherit; visibility:collapse" aria-hidden="true"></span>          
+            @item.Name
+        </a>
+    }
+</div>
 
 
+<!-- Bought -->
+<div class="list-group" id="BoughtGroup">
+    <H3>Bought</H3>
+    @foreach (var item in Model.BoughtItems) {
+        <a id="@item.Name" onclick="Click('@item.Name'); return false;" href="#" class="list-group-item" style="color: lightgray">
+            <span id="checkmark" class="glyphicon glyphicon-ok" style="color:inherit" aria-hidden="true"></span>          
+            @item.Name
+        </a>
+    }
+</div>
 
 
