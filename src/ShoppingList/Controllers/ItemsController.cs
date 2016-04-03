@@ -19,7 +19,7 @@ namespace ShoppingList.Controllers
         }
 
         public IActionResult Delete(string id) {
-            _repository.Remove(new[] {id});
+            _repository.RemoveItem(new[] {id});
             return RedirectToAction("ViewItems");
         }
     }

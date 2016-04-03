@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using ShoppingList.Models;
 using System.Linq;
+using ShoppingList.Common;
 
 namespace ShoppingList.DataAccess
 {
@@ -25,10 +26,11 @@ namespace ShoppingList.DataAccess
             };            
         }
 
-        public static Models.ShoppingList ToModel(this ShoppingListDTO dto, List<Store> stores)
-        {
+        public static Models.ShoppingList ToModel(this ShoppingListDTO dto, List<Store> stores) {
+            var store = stores.FirstOr(s => s.ID == dto.StoreId, () => Store.None);
+
             var result = new Models.ShoppingList(
-                stores.First(s => s.ID == dto.StoreId),
+                store,
                 dto.ID, 
                 dto.Items.Select(i => i.ToModel()));
             return result;

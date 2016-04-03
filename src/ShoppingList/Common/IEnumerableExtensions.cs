@@ -17,5 +17,12 @@ namespace ShoppingList.Common {
         private static IEnumerable<T> Shuffle<T>(IEnumerable<T> self, Random rnd) {
             return self.OrderBy(i => rnd.Next());
         }
+
+        public static T FirstOr<T>(this IEnumerable<T> self, Func<T, bool> predicate, Func<T> defaultValue) {
+            foreach (var item in self.Where(predicate)) {
+                return item;
+            }
+            return defaultValue();
+        }
     }
 }

@@ -37,7 +37,7 @@ namespace ShoppingList.DataAccess
 
         }
 
-        public void Add(IEnumerable<string> items)
+        public void AddItem(IEnumerable<string> items)
         {
             var allItems = GetItems().Concat(items).Distinct().ToList();
             using (var fs = ItemsFile.CreateText()) {
@@ -45,7 +45,7 @@ namespace ShoppingList.DataAccess
             }
         }
 
-        public void Remove(IEnumerable<string> items)
+        public void RemoveItem(IEnumerable<string> items)
         {
             var allItems = GetItems().Except(items).Distinct().ToList();
             using (var fs = ItemsFile.CreateText())
@@ -67,13 +67,25 @@ namespace ShoppingList.DataAccess
 
         }
 
-        public void Save(params Store[] stores)
+        public void SaveStore(params Store[] stores)
         {
-            var allStores = stores.Concat(GetStores()).Distinct();
+            var allStores = stores.Concat(GetStores()).Where(s => s.IsReal).Distinct();
             var dtos = allStores.Select(m => m.ToDto()).ToList();
             using (var fs = StoresFile.CreateText()) {
                 _serializer.Serialize(fs, dtos);
             }
+        }
+
+        public void RemoveStore(params Guid[] storeIDs) {
+            var currentStores = GetStores().ToList();
+            var storesToRemove = currentStores.Join(storeIDs, s => s.ID, id => id, (s, id) => s);
+            var storesToKeep = currentStores.Except(storesToRemove);
+
+            var dtos = storesToKeep.Select(m => m.ToDto()).ToList();
+            using (var fs = StoresFile.CreateText()) {
+                _serializer.Serialize(fs, dtos);
+            }
+
         }
 
         public IEnumerable<Models.ShoppingList> GetAllShoppingLists()

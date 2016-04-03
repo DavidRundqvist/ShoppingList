@@ -6,11 +6,12 @@ using ShoppingList.Models;
 namespace ShoppingList.Services {
     public interface IRepository {
         IEnumerable<string> GetItems();
-        void Add(IEnumerable<string> items);
-        void Remove(IEnumerable<string> items);
+        void AddItem(IEnumerable<string> items);
+        void RemoveItem(IEnumerable<string> items);
 
         IEnumerable<Store> GetStores();
-        void Save(params Store[] stores);
+        void SaveStore(params Store[] stores);
+        void RemoveStore(params Guid[] storeIDs);
 
         IEnumerable<Models.ShoppingList> GetAllShoppingLists();
         Models.ShoppingList GetShoppingList(Guid id);

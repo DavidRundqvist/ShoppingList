@@ -1,0 +1,33 @@
+﻿@model ShoppingList.Models.Store
+@{
+    ViewData["Title"] = "Edit Store";
+}
+
+<script type="text/javascript">
+
+    function Save() {
+        var storeName = document.getElementById("nameInput").value;
+        var parameters = "storeId=" + "@Model.ID.ToString()" + "&storeName=" + storeName;
+        var postUrl = "@Url.Action("UpdateStore", "Stores")?" + parameters;
+        $.post(postUrl, function(data) {
+            window.location.href = "@Url.Action("ViewStores", "Stores")";
+        });
+    }
+</script>
+
+
+
+
+<h2>
+    <span class="label label-default">Edit Store</span>
+</h2>
+
+<div>
+    <button type="button" class="btn btn-success" onclick="Save()">Save</button>
+</div>
+
+
+<div class="form-group">
+    <label for="nameInput">Name</label>
+    <input type="text" class="form-control" id="nameInput" value="@Model.Name">
+</div>

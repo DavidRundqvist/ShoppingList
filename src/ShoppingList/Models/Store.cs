@@ -4,13 +4,14 @@ using System.Linq;
 
 namespace ShoppingList.Models {
     public class Store : IEquatable<Store> {
-        public string Name { get; private set; }
+        public string Name { get; set; }
 
         public Guid ID { get; }
 
         private readonly List<string> _orderedItems = new List<string>(); 
         public IReadOnlyList<string> OrderedItems => _orderedItems;
 
+        public bool IsReal => ID != None.ID;
 
         public Store(string name, Guid id) {
             Name = name;
@@ -47,6 +48,10 @@ namespace ShoppingList.Models {
             _orderedItems.Clear();
             _orderedItems.AddRange(allItems);
         }
+
+
+        public static Store None { get; } = new Store("<Unknown>", Guid.Empty);
+
 
         public bool Equals(Store other) {
             if (ReferenceEquals(null, other)) return false;

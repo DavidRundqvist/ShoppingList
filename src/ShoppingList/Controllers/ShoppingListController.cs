@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Mvc;
+using ShoppingList.Models;
 using ShoppingList.Services;
 using ShoppingList.ViewModels;
 
@@ -26,13 +27,15 @@ namespace ShoppingList.Controllers
         public IActionResult CreateShoppingList()
         {
             var stores = _repository.GetStores().OrderBy(s => s.Name).ToArray();
+            var selectedStore = stores.Any() ? stores.First() : Store.None;
+
             var editViewModel = new EditShoppingListViewModel()
             {
                 Header = "New List",
                 AvailableItems = _repository.GetItems().OrderBy(n => n).ToArray(),
                 AvailableStores = stores,
                 SelectedItems = new string[0],
-                SelectedStore = stores.First(),
+                SelectedStore = selectedStore,
                 ShopplingListId = Guid.NewGuid()
             };
 
@@ -88,7 +91,7 @@ namespace ShoppingList.Controllers
             _repository.Save(sl);
 
             // úpdate items
-            _repository.Add(itemsToBuy);
+            _repository.AddItem(itemsToBuy);
 
             return new HttpOkResult();
         }
@@ -102,9 +105,9 @@ namespace ShoppingList.Controllers
             list.BuyItems(boughtItemNames);
             _repository.Save(list);
 
-            // update store
+            // update store            
             list.Store.BuyItems(boughtItemNames);
-            _repository.Save(list.Store);
+            _repository.SaveStore(list.Store);
 
             return new HttpOkResult();
         }

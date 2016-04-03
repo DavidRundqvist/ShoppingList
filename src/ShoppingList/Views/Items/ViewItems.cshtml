@@ -7,11 +7,13 @@
     <span class="label label-default">Items</span>
 </h2>
 
-@foreach (var item in Model) {
-    <div class="list-group-item">
-        @item
-        <a asp-action="Delete" asp-route-id="@item">
-            <span class="glyphicon glyphicon-remove" style="color: red; float: right" ></span>                  
-        </a>
-    </div>
-}
+<div class="container">
+    @foreach (var item in Model) {
+        <div class="list-group-item">
+            @item
+            <a asp-action="Delete" asp-route-id="@item">
+                <span class="glyphicon glyphicon-remove" style="color: red; float: right"></span>
+            </a>
+        </div>
+    }
+</div>

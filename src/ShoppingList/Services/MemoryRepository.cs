@@ -11,13 +11,13 @@ namespace ShoppingList.Services {
 
 
         public IEnumerable<string> GetItems() => _items.OrderBy(i => i).ToList();
-        public void Add(IEnumerable<string> items)
+        public void AddItem(IEnumerable<string> items)
         {
             var newItems = items.Concat(_items).Distinct().ToList();
             _items.Clear();
             _items.AddRange(newItems);
         }
-        public void Remove(IEnumerable<string> items)
+        public void RemoveItem(IEnumerable<string> items)
         {
             foreach (var item in items)
             {
@@ -26,9 +26,16 @@ namespace ShoppingList.Services {
         }
 
         public IEnumerable<Store> GetStores() => _stores.OrderBy(s => s.Name).ToList();
-        public void Save(params Store[] stores) {
-            var newStores = stores.Except(_stores);
+        public void SaveStore(params Store[] stores) {
+            var newStores = stores.Except(_stores).Where(s => s.IsReal);
             _stores.AddRange(newStores);
+        }
+
+        public void RemoveStore(params Guid[] storeIDs) {
+            var storesToRemove = _stores.Join(storeIDs, s => s.ID, id => id, (s, id) => s).ToList();
+            foreach (var store in storesToRemove) {
+                _stores.Remove(store);
+            }
         }
 
         public IEnumerable<Models.ShoppingList> GetAllShoppingLists() => _shoppingLists.ToList();

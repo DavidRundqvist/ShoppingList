@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Microsoft.AspNet.Mvc;
 using ShoppingList.Services;
 
@@ -17,24 +18,31 @@ namespace ShoppingList.Controllers {
             return View(stores);
         }
 
-        private string[] GetItems(string joinedItemsString)
-        {
-            return (string.IsNullOrEmpty(joinedItemsString) ? Enumerable.Empty<string>() : joinedItemsString.Split('§')).ToArray();
-        }
-
 
         [HttpPost]
-        public IActionResult SaveStores(string storesJoined)
-        {
-            var storeNames = GetItems(storesJoined);
-
-            var existingStores = _repository.GetStores().ToList();
-            var newStoreNames = storeNames.Except(existingStores.Select(store => store.Name));
-
-            var newStores = _factory.CreateStores(newStoreNames.ToArray());
-            _repository.Save(newStores);
+        public IActionResult AddStore(string storeName) {            
+            var newStores = _factory.CreateStores(storeName);
+            _repository.SaveStore(newStores);
 
             return new HttpOkResult();
+        }
+
+        public IActionResult Edit(Guid id) {
+            var store = _repository.GetStores().First(s => s.ID == id);
+            return View("EditStore", store);
+        }
+
+        [HttpPost]
+        public IActionResult UpdateStore(Guid storeId, string storeName) {
+            var store = _repository.GetStores().First(s => s.ID == storeId);
+            store.Name = storeName;
+            _repository.SaveStore(store);
+            return new HttpOkResult();
+        }
+
+        public IActionResult Delete(Guid id) {
+            _repository.RemoveStore(id); 
+            return RedirectToAction("ViewStores");
         }
     }
 }

@@ -5,7 +5,6 @@
 }
 
 <script type="text/javascript">
-    var storeList = @Html.Raw(JsonConvert.SerializeObject(this.Model.Select(s => s.Name).ToArray()));
 
     function CreateStore() {
         var textField = document.getElementById('NewStoreField');
@@ -19,35 +18,19 @@
         if (existingField != null)
             return;
 
-        // create new element
-        @*Template: <div id="@item.Name" class="list-group-item">@item.Name</div>*@
-        var element = document.createElement('div');
-        element.textContent = storeName;
-        element.setAttribute('class', 'list-group-item');
-        element.setAttribute('id', storeName);
-
-        storeList.push(storeName);
-        var storeGroup = document.getElementById('stores');
-        storeGroup.appendChild(element);
-    }
-
-    function Save() {
-        var parameters = "storesJoined=" + storeList.join("§");
-        var postUrl = "@Url.Action("SaveStores", "Stores")?" + parameters;
+        var parameters = "storeName=" + storeName;
+        var postUrl = "@Url.Action("AddStore", "Stores")?" + parameters;
         $.post(postUrl, function(data) {
-            window.location.href = "@Url.Action("ViewShoppingLists", "ShoppingList")";
+            window.location.href = "@Url.Action("ViewStores", "Stores")";
         });
     }
+
 </script>
 
 
 <h2>
     <span class="label label-default">Stores</span>
 </h2>
-<div>
-    <button type="button" class="btn btn-success" onclick="Save()">Save</button>
-    <a asp-controller="ShoppingList" asp-action="ViewShoppingLists" class="btn btn-danger">Cancel</a>    
-</div>
 
 <div class="container">
     <div class='col-xs-12'>
@@ -63,7 +46,16 @@
         <h3>Stores</h3>
         <div class="list-group" id="stores">
             @foreach (var item in Model) {
-                <div id="@item.Name" class="list-group-item">@item.Name</div>
+                <div class="list-group-item">
+                    @item.Name
+                    <a asp-action="Delete" asp-route-id="@item.ID">
+                        <span class="glyphicon glyphicon-remove" style="float: right; color: red; margin-left: 10px"></span>
+                    </a>
+                    <a asp-action="Edit" asp-route-id="@item.ID">
+                        <span class="glyphicon glyphicon-pencil" style="float: right"></span>
+                    </a>
+
+                </div>
             }
         </div>
     </div>
