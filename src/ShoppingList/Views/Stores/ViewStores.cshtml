@@ -25,6 +25,17 @@
         });
     }
 
+    function ConfirmDelete(id) {
+
+        var result = confirm("Really delete store?");
+        if (result) {
+            var postUrl = "@Url.Action("Delete", "Stores")/" + id;
+            $.post(postUrl, function(data) {
+                window.location.href = "@Url.Action("ViewStores", "Stores")";
+            });            
+        }
+    }
+
 </script>
 
 
@@ -48,13 +59,12 @@
             @foreach (var item in Model) {
                 <div class="list-group-item">
                     @item.Name
-                    <a asp-action="Delete" asp-route-id="@item.ID">
+                    <a onclick="ConfirmDelete('@item.ID')" href="#" >
                         <span class="glyphicon glyphicon-remove" style="float: right; color: red; margin-left: 10px"></span>
                     </a>
-                    <a asp-action="Edit" asp-route-id="@item.ID">
+                    <a asp-action="Edit" asp-route-id="@item.ID" >
                         <span class="glyphicon glyphicon-pencil" style="float: right"></span>
                     </a>
-
                 </div>
             }
         </div>

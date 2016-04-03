@@ -1,34 +1,106 @@
-﻿@model ShoppingList.Models.Store
+﻿@using System.Threading.Tasks
+@using Newtonsoft.Json
+@model ShoppingList.Models.Store
 @{
     ViewData["Title"] = "Edit Store";
 }
 
 <script type="text/javascript">
 
+    sortedItems = @Html.Raw(JsonConvert.SerializeObject(this.Model.OrderedItems));
+
+    function Move(fromIndex, toIndex) {
+        if (toIndex < 0 || toIndex > sortedItems.length)
+            return;
+
+        var item = sortedItems[fromIndex];
+        sortedItems.splice(fromIndex, 1);
+        sortedItems.splice(toIndex, 0, item);
+    }
+
+    function Up(item) {
+        var index = sortedItems.indexOf(item);
+        if (index > 0) {
+            Move(index, index - 1);
+
+            var group = document.getElementById("OrderedItemsGroup");
+            var element = document.getElementById(item);
+            var before = element.previousElementSibling;
+            group.insertBefore(element, before);
+        }
+    }
+
+    function Down(item) {
+        var index = sortedItems.indexOf(item);
+        if (index >= 0 && index < sortedItems.length - 1) {
+            Move(index, index + 1);
+
+            var group = document.getElementById("OrderedItemsGroup");
+            var element = document.getElementById(item);
+            var after = element.nextElementSibling;
+            group.insertBefore(after, element);
+        }
+    }
+
+    function Delete(item) {
+        var index = sortedItems.indexOf(item);
+        if (index >= 0) {
+            sortedItems.splice(index, 1);
+            var group = document.getElementById("OrderedItemsGroup");
+            var element = document.getElementById(item);
+            group.removeChild(element);
+        }
+    }
+
     function Save() {
         var storeName = document.getElementById("nameInput").value;
-        var parameters = "storeId=" + "@Model.ID.ToString()" + "&storeName=" + storeName;
+        var parameters = "storeId=" + "@Model.ID.ToString()" + "&storeName=" + storeName + "&sortedItems=" + sortedItems.join("§");
         var postUrl = "@Url.Action("UpdateStore", "Stores")?" + parameters;
-        $.post(postUrl, function(data) {
+        $.post(postUrl, function (data) {
             window.location.href = "@Url.Action("ViewStores", "Stores")";
         });
     }
+
+
 </script>
-
-
-
 
 <h2>
     <span class="label label-default">Edit Store</span>
 </h2>
-
 <div>
     <button type="button" class="btn btn-success" onclick="Save()">Save</button>
     <a asp-controller="Stores" asp-action="ViewStores" class="btn btn-danger">Cancel</a>
 </div>
 
+<div class="container">
+    <div class="col-xs-12">
 
-<div class="form-group">
-    <label for="nameInput">Name</label>
-    <input type="text" class="form-control" id="nameInput" value="@Model.Name">
+        <div class="row">
+
+            <H3>Name</H3>
+            <input type="text" class="form-control" id="nameInput" value="@Model.Name"/>
+
+            <H3>Items</H3>
+            <div class="list-group" id="OrderedItemsGroup">
+                @foreach (var item in Model.OrderedItems)
+                {
+                    <div class="list-group-item" id="@item">
+
+                        <a onclick="Down('@item'); return false;" href="#">
+                            <span class="glyphicon glyphicon-arrow-down" style="float: left; margin-right: 10px"></span>
+                        </a>
+                        <a onclick="Up('@item'); return false;" href="#">
+                            <span class="glyphicon glyphicon-arrow-up" style="float: left; margin-right: 10px"></span>
+                        </a>
+                        @item
+                        <a onclick="Delete('@item'); return false;" href="#">
+                            <span class="glyphicon glyphicon-remove" style="float: right; color: red"></span>
+                        </a>
+
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
 </div>
+

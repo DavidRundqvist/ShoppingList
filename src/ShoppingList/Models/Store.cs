@@ -8,8 +8,19 @@ namespace ShoppingList.Models {
 
         public Guid ID { get; }
 
-        private readonly List<string> _orderedItems = new List<string>(); 
-        public IReadOnlyList<string> OrderedItems => _orderedItems;
+        private readonly List<string> _orderedItems = new List<string>();
+
+        public string[] OrderedItems
+        {
+            get { return _orderedItems.ToArray(); }
+            set
+            {
+                _orderedItems.Clear();
+                _orderedItems.AddRange(value);
+            }
+        }
+
+    
 
         public bool IsReal => ID != None.ID;
 
