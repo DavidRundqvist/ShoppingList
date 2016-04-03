@@ -8,10 +8,10 @@
 </h2>
 
 @foreach (var item in Model) {
-    <div class="list-group-item">@Html.DisplayFor(modelItem => item)</div>
-        @*<td>
-            <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-            <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-            <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-        </td>*@
+    <div class="list-group-item">
+        @item
+        <a asp-action="Delete" asp-route-id="@item">
+            <span class="glyphicon glyphicon-remove" style="color: red; float: right" ></span>                  
+        </a>
+    </div>
 }

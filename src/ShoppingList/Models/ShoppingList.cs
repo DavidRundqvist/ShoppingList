@@ -43,13 +43,17 @@ namespace ShoppingList.Models {
 
         public void BuyItems(params string[] boughtItemNames) {
             var boughtItems = boughtItemNames.Join(_items, name => name, item => item.Name, (name, item) => item).ToList();
-            var itemsToBuy = _items.Except(boughtItems);
+            var itemsToBuy = _items.Except(boughtItems).ToList();
             foreach (var item in boughtItems) {
                 item.IsBought = true;
             }
             foreach(var item in itemsToBuy) {
                 item.IsBought = false;
             }
+
+            // Reorder:
+            _items.Clear();
+            _items.AddRange(boughtItems.Concat(itemsToBuy));
         }
 
         public bool Equals(ShoppingList other)

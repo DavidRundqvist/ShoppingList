@@ -30,15 +30,13 @@
             var toBuyGroup = document.getElementById("ToBuyGroup");
             boughtItems.splice(index, 1);
             toBuyGroup.appendChild(element);
-            element.style = "color: black";
-            element.querySelector("#checkmark").style = "color: inherit; visibility:collapse";
+            element.querySelector("#checkmark").style = "color: green; display:none";
         } else {
             // Buy
             var boughtGroup = document.getElementById("BoughtGroup");
             boughtItems.push(item);
             boughtGroup.appendChild(element);
-            element.style = "color: lightgray";
-            element.querySelector("#checkmark").style = "color: inherit; visibility:visible";
+            element.querySelector("#checkmark").style = "color: green; display:inline";
         }
     }
 
@@ -64,27 +62,36 @@
 </div>
 
 
-<!-- To buy -->
-<div class="list-group" id="ToBuyGroup">
-    <H3>To Buy</H3>
-    @foreach (var item in Model.ItemsToBuy) {
-        <a id="@item.Name" onclick="Click('@item.Name'); return false;" href="#" class="list-group-item" style="color: black">
-            <span id="checkmark" class="glyphicon glyphicon-ok" style="color: inherit; visibility:collapse" aria-hidden="true"></span>          
-            @item.Name
-        </a>
-    }
-</div>
+<div class="container">
+    <div class="row">
+        <div class='col-xs-6'>
+            <!-- To buy -->
+            <div class="list-group" id="ToBuyGroup">
+                <H3>To Buy</H3>
+                @foreach (var item in Model.ItemsToBuy) {
+                    <a id="@item.Name" onclick="Click('@item.Name'); return false;" href="#" class="list-group-item">
+                        <span id="checkmark" class="glyphicon glyphicon-ok" style="color: green; display: none"></span>
+                        @item.Name
+                    </a>
+                }
+            </div>
+        </div>
 
+        <div class='col-xs-6'>
 
-<!-- Bought -->
-<div class="list-group" id="BoughtGroup">
-    <H3>Bought</H3>
-    @foreach (var item in Model.BoughtItems) {
-        <a id="@item.Name" onclick="Click('@item.Name'); return false;" href="#" class="list-group-item" style="color: lightgray">
-            <span id="checkmark" class="glyphicon glyphicon-ok" style="color:inherit" aria-hidden="true"></span>          
-            @item.Name
-        </a>
-    }
+            <!-- Bought -->
+            <div class="list-group" id="BoughtGroup">
+                <H3>Bought</H3>
+                @foreach (var item in Model.BoughtItems)
+                {
+                    <a id="@item.Name" onclick="Click('@item.Name'); return false;" href="#" class="list-group-item">
+                        <span id="checkmark" class="glyphicon glyphicon-ok" style="color: green; display:inline" ></span>
+                        @item.Name
+                    </a>
+                }
+            </div>
+        </div>
+    </div>
 </div>
 
 

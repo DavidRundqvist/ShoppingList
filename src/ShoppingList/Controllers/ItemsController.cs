@@ -17,5 +17,10 @@ namespace ShoppingList.Controllers
             var items = _repository.GetItems().OrderBy(i => i).ToList();
             return View(items);
         }
+
+        public IActionResult Delete(string id) {
+            _repository.Remove(new[] {id});
+            return RedirectToAction("ViewItems");
+        }
     }
 }
