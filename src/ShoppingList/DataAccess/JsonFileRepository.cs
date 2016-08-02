@@ -62,7 +62,7 @@ namespace ShoppingList.DataAccess
             using (var fs = StoresFile.OpenText())
             using (var reader = new JsonTextReader(fs))
             {
-                return _serializer.Deserialize<List<StoreDTO>>(reader).Select(dto => dto.ToModel());
+                return _serializer.Deserialize<List<StoreDTO>>(reader).Select(dto => dto.ToModel()).Concat(new[] { Store.None });
             }
 
         }
@@ -97,13 +97,15 @@ namespace ShoppingList.DataAccess
             using (var reader = new JsonTextReader(fs))
             {
                 var stores = GetStores().ToList();
-                return _serializer.Deserialize<List<ShoppingListDTO>>(reader).Select(dto => dto.ToModel(stores));
+                var shoppingListDtos = _serializer.Deserialize<List<ShoppingListDTO>>(reader);
+                var result = shoppingListDtos.Select(dto => dto.ToModel(stores));
+                return result;
             }
         }
 
-        public Models.ShoppingList GetShoppingList(Guid id)
-        {
-            return GetAllShoppingLists().FirstOrDefault(sl => sl.ID == id);
+        public Models.ShoppingList GetShoppingList(Guid id) {
+            var allShoppingLists = GetAllShoppingLists();
+            return allShoppingLists.FirstOrDefault(sl => sl.ID == id);
         }
 
         public void Save(params Models.ShoppingList[] lists)

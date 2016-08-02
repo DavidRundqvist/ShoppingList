@@ -29,10 +29,11 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a asp-controller="ShoppingList" asp-action="ViewShoppingLists" class="navbar-brand">Shopping Lists</a>
+                    <a asp-controller="ShoppingList" asp-action="Start" class="navbar-brand">Start</a>
                 </div>
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
+                        <li><a asp-controller="ShoppingList" asp-action="ViewShoppingLists">Shopping Lists</a></li>
                         <li><a asp-controller="Stores" asp-action="ViewStores">Stores</a></li>
                         <li><a asp-controller="Items" asp-action="ViewItems">Items</a></li>
                     </ul>

@@ -14,7 +14,7 @@ namespace Test.Models
         [SetUp]
         public void Setup()
         {
-            _sut = new ShoppingList.Models.ShoppingList(new ShoppingList.Models.Store("Coop", Guid.NewGuid()));
+            _sut = new ShoppingList.Models.ShoppingList(new ShoppingList.Models.Store("Coop", Guid.NewGuid()), Guid.NewGuid());
         }
 
         [Test]

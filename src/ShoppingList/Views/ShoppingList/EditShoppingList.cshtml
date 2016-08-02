@@ -28,8 +28,18 @@
         }
     }
 
+    function SaveAndViewLists() {
+        var destination = "@Url.Action("ViewShoppingLists", "ShoppingList")";
+        Save(destination);
+    }
 
-    function Save() {
+    function SaveAndGoShopping() {
+        var destination = "@Url.Action("GoShopping", "ShoppingList")?id=" + "@Model.ShopplingListId.ToString()";
+        Save(destination);
+    }
+
+
+    function Save(destination) {
         var store = document.getElementById("StoreSelection").value;
         if (store == null || store == "") {
             var warning = document.getElementById("SelectStoreWarning");
@@ -40,9 +50,10 @@
         var parameters = "shoppingListId=" + "@Model.ShopplingListId.ToString()" + "&storeName=" + store + "&itemsToBuyJoined="  + selectedItems.join("§");
         var postUrl = "@Url.Action("SaveShoppingList", "ShoppingList")?" + parameters;
         $.post(postUrl, function(data) {
-            window.location.href = "@Url.Action("ViewShoppingLists", "ShoppingList")";
+            window.location.href = destination;
         });
     }
+
 
     function CreateItem() {
         var textField = document.getElementById('NewItemField');
@@ -77,8 +88,9 @@
 <h2><span class="label label-default">@Model.Header</span></h2>
 
 <div>
-    <button type="button" class="btn btn-success" onclick="Save()">Save</button>
+    <button type="button" class="btn btn-success" onclick="SaveAndViewLists()">Save</button>
     <a asp-controller="ShoppingList" asp-action="ViewShoppingLists" class="btn btn-danger">Cancel</a>
+    <button type="button" class="btn btn-success" onclick="SaveAndGoShopping()">Go Shop</button>
 </div>
 
 <div class="container">
@@ -98,7 +110,7 @@
                 <input id="NewItemField" type="text" class="form-control" placeholder="chocolate..."
                      onkeydown="if (event.keyCode == 13) CreateItem()" />
                 <span class="input-group-btn">
-                    <button class="btn btn-default" type="button" onclick="CreateItem()">Add!</button>
+                    <button class="btn btn-default" type="button" onclick="CreateItem()">Add</button>
                 </span>
             </div>
         </div>

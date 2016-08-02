@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -13,6 +14,10 @@ namespace ShoppingList
 {
     public class Startup
     {
+        public Startup() {
+            Console.WriteLine("Starting up Shopping list");
+        }
+
         //public Startup(IHostingEnvironment env)
         //{
         //    // Set up configuration sources.
@@ -51,15 +56,22 @@ namespace ShoppingList
             services.AddTransient<JsonSerializer>();
             services.AddTransient<StoreFactory>();
             services.AddTransient<TestData>();
-            services.AddSingleton<IRepository>(sp =>
-            {
-                var root = sp.GetService<IApplicationEnvironment>().ApplicationBasePath;
-                var dataPath = Path.Combine(root, "../../../ShoppingListData");
+            services.AddSingleton<IRepository>(sp => {
+                                                   var dataPath = "";
+                                                   if (sp.GetService<IHostingEnvironment>().IsDevelopment()) {
+                                                       var root = sp.GetService<IApplicationEnvironment>().ApplicationBasePath;
+                                                       dataPath = Path.Combine(root, "../../../ShoppingListData");
+                                                   }
+                                                   else {
+                                                       dataPath = @"/home/david/asp/ShoppingListData";
+                                                   }
+                                                   var dataDir = new DirectoryInfo(dataPath);
+                                                   Console.WriteLine($"Using data at {dataDir.FullName}");
 
-                return new JsonFileRepository(
-                    new DirectoryInfo(dataPath),
-                    sp.GetService<JsonSerializer>());
-            });
+                                                   return new JsonFileRepository(
+                                                       dataDir,
+                                                       sp.GetService<JsonSerializer>());
+                                               });
             //services.AddSingleton<IRepository>(sp => {
             //                                       var result = new MemoryRepository();
             //                                       var env = sp.GetService<IHostingEnvironment>();
@@ -109,13 +121,20 @@ namespace ShoppingList
             //app.UseIdentity();
 
             // To configure external authentication please see http://go.microsoft.com/fwlink/?LinkID=532715
-
+            app.UseDeveloperExceptionPage();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=ShoppingList}/{action=ViewShoppingLists}/{id?}");
+                    template: "{controller=ShoppingList}/{action=Start}/{id?}");
+
+                /*
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller=Home}/{action=Start}/{id?}");*/
             });
+
+            Console.WriteLine("Configuration finished");
         }
 
         // Entry point for the application.

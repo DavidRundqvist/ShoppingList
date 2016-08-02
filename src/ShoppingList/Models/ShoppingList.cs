@@ -21,9 +21,9 @@ namespace ShoppingList.Models {
         /// <summary>
         /// Creates a new shopping list
         /// </summary>
-        public ShoppingList(Store store) {
+        public ShoppingList(Store store, Guid id) {
             Store = store;
-            ID = Guid.NewGuid();
+            ID = id ;
             _items = new List<Item>();
         }
 
