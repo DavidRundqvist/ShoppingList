@@ -5,9 +5,6 @@ using ShoppingList.Models;
 
 namespace ShoppingList.Services {
     public interface IRepository {
-        IEnumerable<string> GetItems();
-        void AddItem(IEnumerable<string> items);
-        void RemoveItem(IEnumerable<string> items);
 
         IEnumerable<Store> GetStores();
         void SaveStore(params Store[] stores);

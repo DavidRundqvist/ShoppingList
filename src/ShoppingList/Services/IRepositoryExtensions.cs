@@ -9,7 +9,7 @@ namespace ShoppingList.Services {
 
             var groups = items.GroupBy(s => s.ToLowerInvariant());
             var commonGroups = groups.OrderByDescending(g => g.Count());
-            return commonGroups.Take(15).Select(g => g.Key);
+            return commonGroups.Take(20).Select(g => g.Key);
 
         }
     }

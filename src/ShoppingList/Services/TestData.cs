@@ -13,7 +13,6 @@ namespace ShoppingList.Services {
 
         public void InsertTestData(IRepository target) {
             var items = new[] {"mjölk", "bröd", "ost", "smör", "kaffe", "bacon", "bananer", "skinka", "tandkräm"};
-            target.AddItem(items);
 
             var stores = _storeFactory.CreateStores("coop valla", "ica maxi", "city gross", "systembolaget");
             target.SaveStore(stores);

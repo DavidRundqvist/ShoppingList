@@ -108,9 +108,6 @@ namespace ShoppingList.Controllers
             sl.ReplaceItems(itemsToBuy);
             _repository.Save(sl);
 
-            // úpdate items
-            _repository.AddItem(itemsToBuy);
-
             return new HttpOkResult();
         }
 
