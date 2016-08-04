@@ -8,14 +8,17 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.PlatformAbstractions;
 using Newtonsoft.Json;
 using ShoppingList.DataAccess;
+using ShoppingList.Models;
 using ShoppingList.Services;
+using System.Reflection;
 
 namespace ShoppingList
 {
     public class Startup
     {
         public Startup() {
-            Console.WriteLine("Starting up Shopping list");
+            var version = typeof(Startup).GetTypeInfo().Assembly.GetName().Version;
+            Console.WriteLine($"Starting up Shopping list version {version}");
         }
 
         //public Startup(IHostingEnvironment env)
@@ -56,7 +59,8 @@ namespace ShoppingList
             services.AddTransient<JsonSerializer>();
             services.AddTransient<StoreFactory>();
             services.AddTransient<TestData>();
-            services.AddSingleton<IRepository>(sp => {
+            services.AddTransient<SettingsPersistence>();
+            services.AddSingleton<DirectoryInfo>(sp => {
                                                    var dataPath = "";
                                                    if (sp.GetService<IHostingEnvironment>().IsDevelopment()) {
                                                        var root = sp.GetService<IApplicationEnvironment>().ApplicationBasePath;
@@ -67,11 +71,9 @@ namespace ShoppingList
                                                    }
                                                    var dataDir = new DirectoryInfo(dataPath);
                                                    Console.WriteLine($"Using data at {dataDir.FullName}");
-
-                                                   return new JsonFileRepository(
-                                                       dataDir,
-                                                       sp.GetService<JsonSerializer>());
+                                                     return dataDir;
                                                });
+            services.AddTransient<IRepository, JsonFileRepository>();
             //services.AddSingleton<IRepository>(sp => {
             //                                       var result = new MemoryRepository();
             //                                       var env = sp.GetService<IHostingEnvironment>();
@@ -114,6 +116,8 @@ namespace ShoppingList
             //    catch { }
             //}
 
+
+            
             app.UseIISPlatformHandler(options => options.AuthenticationDescriptions.Clear());
 
             app.UseStaticFiles();

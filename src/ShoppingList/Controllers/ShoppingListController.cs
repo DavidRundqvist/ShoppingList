@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Mvc;
+using ShoppingList.DataAccess;
 using ShoppingList.Models;
 using ShoppingList.Services;
 using ShoppingList.ViewModels;
@@ -12,10 +13,12 @@ namespace ShoppingList.Controllers
     public class ShoppingListController : Controller {
         private readonly IRepository _repository;
         private readonly StoreFactory _storeFactory;
+        private readonly SettingsPersistence _settings;
 
-        public ShoppingListController(IRepository repository, StoreFactory storeFactory) {
+        public ShoppingListController(IRepository repository, StoreFactory storeFactory, SettingsPersistence settings) {
             _repository = repository;
             _storeFactory = storeFactory;
+            _settings = settings;
         }
 
 
@@ -49,7 +52,7 @@ namespace ShoppingList.Controllers
             var editViewModel = new EditShoppingListViewModel()
             {
                 Header = "New List",
-                AvailableItems = _repository.GetCommonItems().OrderBy(n => n).ToArray(),
+                AvailableItems = GetPreviousItems(),
                 AvailableStores = stores,
                 SelectedItems = new string[0],
                 SelectedStore = selectedStore,
@@ -64,12 +67,10 @@ namespace ShoppingList.Controllers
             var stores = _repository.GetStores().OrderBy(s => s.Name).ToArray();
             var sl = _repository.GetShoppingList(id);
             var selectedItems = sl.AllItems.Select(i => i.Name).ToArray();
-            var availableItems = _repository.GetCommonItems().Except(selectedItems).OrderBy(i => i).ToArray();
 
-            var editViewModel = new EditShoppingListViewModel()
-            {
+            var editViewModel = new EditShoppingListViewModel() {
                 Header = "Edit List",
-                AvailableItems = availableItems,
+                AvailableItems = GetPreviousItems(),
                 AvailableStores = stores,
                 SelectedItems = selectedItems,
                 SelectedStore = sl.Store,
@@ -77,6 +78,10 @@ namespace ShoppingList.Controllers
             };
 
             return View("EditShoppingList", editViewModel);
+        }
+
+        private string[] GetPreviousItems() {
+            return _repository.GetCommonItems().Take(_settings.Load().NumberOfPreviousItems).OrderBy(n => n).ToArray();
         }
 
         public IActionResult GoShopping(Guid? id) {

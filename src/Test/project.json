@@ -5,7 +5,7 @@
   },
 
   "dependencies": {
-    "ShoppingList": "1.1.0",
+    "ShoppingList": "1.2.0",
     "NUnit": "3.2.0",
     "NUnitLite": "3.2.0",
     "FluentAssertions":  "4.2.2"

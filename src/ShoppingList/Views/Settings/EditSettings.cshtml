@@ -1,0 +1,20 @@
+﻿@model ShoppingList.Models.Settings
+@{
+    ViewData["Title"] = "Settings";
+}
+
+
+<h2>
+    <span class="label label-default">Settings</span>
+</h2>
+
+
+<form asp-controller="Settings" asp-action="Save" method="post">
+    <div class="form-group">
+        <label for="numberOfPreviousItems">Number of items:</label>
+        <input id="numberOfPreviousItems" class="form-control" asp-for="NumberOfPreviousItems"/>
+        <p class="help-block">Controls the number of previous items to show when editing a shopping list.</p>
+    </div>
+
+        <button type="submit" class="btn btn-success">Save</button>
+</form>
