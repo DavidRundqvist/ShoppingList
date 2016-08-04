@@ -8,6 +8,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5181D811-D61D-40A9-A3C9-A0E6D4005B1A}"
 	ProjectSection(SolutionItems) = preProject
 		global.json = global.json
+		Publish-ToBraavos.ps1 = Publish-ToBraavos.ps1
 	EndProjectSection
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "ShoppingList", "src\ShoppingList\ShoppingList.xproj", "{682B44DB-1F4C-41E3-8308-077A2235C4AE}"

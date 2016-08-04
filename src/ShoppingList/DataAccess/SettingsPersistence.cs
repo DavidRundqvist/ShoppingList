@@ -13,7 +13,7 @@ namespace ShoppingList.DataAccess {
             _serializer = serializer;
         }
 
-        FileInfo SettingsFile => new FileInfo($@"{_rootFolder.FullName}\Settings.json");
+        FileInfo SettingsFile => new FileInfo(Path.Combine(_rootFolder.FullName, "Settings.json"));
 
 
 

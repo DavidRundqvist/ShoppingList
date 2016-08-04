@@ -1,0 +1,1 @@
+﻿dnu publish .\src\ShoppingList -o "\\BRAAVOS\asp\ShoppingList" --configuration Release
