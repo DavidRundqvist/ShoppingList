@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.Data.Entity.Internal;
+
 using System.Linq;
 
 namespace ShoppingList.Models {

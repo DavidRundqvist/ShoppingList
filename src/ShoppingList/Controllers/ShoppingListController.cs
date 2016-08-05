@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNet.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using ShoppingList.DataAccess;
 using ShoppingList.Models;
 using ShoppingList.Services;
@@ -113,7 +113,7 @@ namespace ShoppingList.Controllers
             sl.ReplaceItems(itemsToBuy);
             _repository.Save(sl);
 
-            return new HttpOkResult();
+            return new OkResult();
         }
 
         [HttpPost]
@@ -129,7 +129,7 @@ namespace ShoppingList.Controllers
             list.Store.BuyItems(boughtItemNames);
             _repository.SaveStore(list.Store);
 
-            return new HttpOkResult();
+            return new OkResult();
         }
     }
 }

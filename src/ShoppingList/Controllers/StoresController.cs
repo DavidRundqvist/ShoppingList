@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using Microsoft.AspNet.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using ShoppingList.Services;
 
 namespace ShoppingList.Controllers {
@@ -24,7 +24,7 @@ namespace ShoppingList.Controllers {
             var newStores = _factory.CreateStores(storeName);
             _repository.SaveStore(newStores);
 
-            return new HttpOkResult();
+            return new OkResult();
         }
 
         public IActionResult Edit(Guid id) {
@@ -39,7 +39,7 @@ namespace ShoppingList.Controllers {
             store.Name = storeName;
             store.OrderedItems = items;
             _repository.SaveStore(store);
-            return new HttpOkResult();
+            return new OkResult();
         }
 
         public IActionResult Delete(Guid id) {

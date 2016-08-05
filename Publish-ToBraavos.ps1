@@ -1,1 +1,1 @@
-﻿dnu publish .\src\ShoppingList -o "\\BRAAVOS\asp\ShoppingList" --configuration Release
+﻿dotnet publish .\src\ShoppingList -o "\\BRAAVOS\asp\ShoppingList" --configuration Release -r ubuntu.14.04-x64

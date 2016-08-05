@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using Microsoft.AspNet.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using ShoppingList.DataAccess;
 using ShoppingList.Models;
 using ShoppingList.Services;

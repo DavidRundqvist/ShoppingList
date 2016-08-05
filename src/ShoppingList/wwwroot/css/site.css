@@ -1,7 +1,6 @@
 ﻿body {
     padding-top: 50px;
     padding-bottom: 20px;
-    background: #E0FCFF;
 }
 
 /* Wrapping element */
@@ -12,30 +11,28 @@
 }
 
 /* Set widths on the form inputs since otherwise they're 100% wide */
-/*input,
+input,
 select,
 textarea {
     max-width: 280px;
-}*/
+}
 
 /* Carousel */
-.carousel-caption {
-    z-index: 10 !important;
+.carousel-caption p {
+    font-size: 20px;
+    line-height: 1.4;
 }
 
-    .carousel-caption p {
-        font-size: 20px;
-        line-height: 1.4;
-    }
-
-@media (min-width: 768px) {
-    .carousel-caption {
-        z-index: 10 !important;
-    }
+/* Make .svg files in the carousel display properly in older browsers */
+.carousel-inner .item img[src$=".svg"]
+{
+    width: 100%;
 }
 
-label { 
-    font-size: 18px;
-    margin-top: 10px;
-    margin-right: 5px;
+/* Hide/rearrange for smaller screens */
+@media screen and (max-width: 767px) {
+  /* Hide captions */
+  .carousel-caption {
+    display: none
+  }
 }
