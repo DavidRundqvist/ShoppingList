@@ -1,5 +1,7 @@
 artifacts/*
 src/ShoppingList/bin/*
+src/ShoppingList/obj/*
 src/ShoppingList/project.lock.json
-src/ShoppingList/project.lock.json
-src/Test/project.lock.json
+test/ShoppingListTest/obj/*
+test/ShoppingListTest/bin/*
+test/ShoppingListTest/project.lock.json
