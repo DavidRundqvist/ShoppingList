@@ -1,7 +1,7 @@
 ﻿@model ShoppingList.Models.ShoppingList
 @using Newtonsoft.Json
 @{
-    ViewData["Title"] = "Go Shopping";
+    ViewData["Title"] = "Go";
 }
 
 <script type="text/javascript">
@@ -67,7 +67,7 @@
         <div class='col-xs-6'>
             <!-- To buy -->
             <div class="list-group" id="ToBuyGroup">
-                <H3>To Buy</H3>
+                <H3>To Do</H3>
                 @foreach (var item in Model.ItemsToBuy) {
                     <a id="@item.Name" onclick="Click('@item.Name'); return false;" href="#" class="list-group-item">
                         <span id="checkmark" class="glyphicon glyphicon-ok" style="color: green; display: none"></span>
@@ -81,7 +81,7 @@
 
             <!-- Bought -->
             <div class="list-group" id="BoughtGroup">
-                <H3>Bought</H3>
+                <H3>Done</H3>
                 @foreach (var item in Model.BoughtItems)
                 {
                     <a id="@item.Name" onclick="Click('@item.Name'); return false;" href="#" class="list-group-item">

@@ -8,6 +8,9 @@
 <script type="text/javascript">
 
     var selectedItems = @Html.Raw(JsonConvert.SerializeObject(this.Model.SelectedItems.ToArray()));
+    var previousItems = @Html.Raw(JsonConvert.SerializeObject(this.Model.PreviousItems.ToArray()));
+    var allItems = @Html.Raw(JsonConvert.SerializeObject(this.Model.AllItems.ToArray()));
+    var allStores = @Html.Raw(JsonConvert.SerializeObject(this.Model.AllStores.ToArray()));
 
     function Click(itemName) {
         var selectedGroup = document.getElementById('selectedGroup');
@@ -83,32 +86,86 @@
         var selectedGroup = document.getElementById('selectedGroup');
         selectedGroup.appendChild(element);
     }
+
+    function SelectType(typeName) {
+        document.getElementById('StoreSelection').value = typeName;
+    }
+
+
+    var itemSearchEngine = new Bloodhound({
+        datumTokenizer: Bloodhound.tokenizers.whitespace,
+        queryTokenizer: Bloodhound.tokenizers.whitespace,
+        local: allItems
+    });
+
+
+    var storeSearchEngine = new Bloodhound({
+        datumTokenizer: Bloodhound.tokenizers.whitespace,
+        queryTokenizer: Bloodhound.tokenizers.whitespace,
+        local: allStores
+    });
+
+
+    $(document).ready(function() {
+
+        // jQuery methods go here...
+        $('#NewItemField').typeahead({
+            hint: false,
+            highlight: true,
+            minLength: 1
+        }, {
+            name: 'newItems',
+            source: itemSearchEngine
+        });
+
+
+        $('#StoreSelection').typeahead({
+            hint: false,
+            highlight: true,
+            minLength: 1
+        }, {
+            name: 'newStores',
+            source: storeSearchEngine
+        });
+
+    });
+
+
 </script>
 
-<h2><span class="label label-default">@Model.Header</span></h2>
+
+
+<h2><span class="label label-default">Edit List</span></h2>
 
 <div>
     <button type="button" class="btn btn-success" onclick="SaveAndViewLists()">Save</button>
-    <button type="button" class="btn btn-default" onclick="SaveAndGoShopping()">Go Shop</button>
+    <button type="button" class="btn btn-default" onclick="SaveAndGoShopping()">Go</button>
     <a asp-controller="ShoppingList" asp-action="ViewShoppingLists" class="btn btn-danger">Cancel</a>
 </div>
 
 <div class="container">
     <div class="row">
         <div class='col-xs-6'>
-            <h3>Store</h3>
-            <select class="form-control" id="StoreSelection">
-                @foreach (var store in Model.AvailableStores) {
-                    <option selected="@Model.SelectedStore.Name.Equals(store.Name)">@store.Name</option>
-                }
-            </select>
+            <h3>Type</h3>
             <span id="SelectStoreWarning" class="label label-danger"></span>
+            
+            <div class="input-group">
+                <input type="text" class="form-control" id="StoreSelection" value="@Model.SelectedStore">
+                <div class="input-group-btn">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+                    <ul id="color-dropdown-menu" class="dropdown-menu dropdown-menu-right" role="menu">
+                        @foreach (var store in Model.PreviousStores) {
+                            <li onclick="SelectType('@store'); return false;"><a href="#" >@store</a></li>
+                        }
+                    </ul>
+                </div>
+            </div>
         </div>
         <div class='col-xs-6'>
-            <h3>New Item</h3>
+            <h3>Add Item</h3>
             <div class="input-group">
                 <input id="NewItemField" type="text" class="form-control" placeholder="chocolate..."
-                     onkeydown="if (event.keyCode == 13) CreateItem()" />
+                       onkeydown="if (event.keyCode == 13) CreateItem();"/>
                 <span class="input-group-btn">
                     <button class="btn btn-default" type="button" onclick="CreateItem()">Add</button>
                 </span>
@@ -118,20 +175,20 @@
 
     <div class="row">
 
-        <!-- Available items -->
+        <!-- Previous items -->
         <div class="col-xs-6">
             <div class="list-group" id="availableGroup">
-                <H3>Items</H3>
-                @foreach (var item in Model.AvailableItems) {
+                <H3>Previous Items</H3>
+                @foreach (var item in Model.PreviousItems) {
                     <a id="@item" onclick="Click('@item'); return false;" href="#" class="list-group-item">@item</a>
                 }
             </div>
         </div>
 
-        <!-- To buy -->
+        <!-- To do -->
         <div class="col-xs-6">
             <div class="list-group" id="selectedGroup">
-                <H3>To Buy</H3>
+                <H3>To Do</H3>
                 @foreach (var item in Model.SelectedItems) {
                     <a id="@item" onclick="Click('@item'); return false;" href="#" class="list-group-item">@item</a>
                 }                

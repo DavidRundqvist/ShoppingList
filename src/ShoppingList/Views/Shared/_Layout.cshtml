@@ -5,16 +5,14 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>@ViewData["Title"] - Shopping List</title>
+    <title>@ViewData["Title"] - Listeria</title>
 
     <!-- framework -->
     <script src="~/lib/jquery/dist/jquery.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="~/lib/typeahead.js/dist/typeahead.bundle.js"></script>
     <link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet"/>
     <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet"/>
-
-    <!-- libs -->
-    <link href="~/lib/awesome/awesome-bootstrap-checkbox.css" rel="stylesheet"/>
 
     <!-- site -->
     <link rel="stylesheet" href="~/css/site.css"/>
@@ -37,8 +35,8 @@
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li><a asp-controller="ShoppingList" asp-action="ViewShoppingLists">Shopping Lists</a></li>
-                <li><a asp-controller="Stores" asp-action="ViewStores">Stores</a></li>
+                <li><a asp-controller="ShoppingList" asp-action="ViewShoppingLists">Lists</a></li>
+                <li><a asp-controller="Stores" asp-action="ViewStores">Types</a></li>
                 <li><a asp-controller="Settings" asp-action="EditSettings">Settings</a></li>
             </ul>
         </div>

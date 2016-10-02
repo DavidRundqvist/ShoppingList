@@ -46,17 +46,19 @@ namespace ShoppingList.Controllers
 
         public IActionResult CreateShoppingList()
         {
-            var stores = _repository.GetStores().OrderBy(s => s.Name).ToArray();
-            var selectedStore = Store.None;
+            var settings = _settings.Load();
+            var stores = _repository.GetStores().OrderBy(s => s.Name).Select(s => s.Name).ToArray();
+            var selectedStore = Store.None.Name;
 
             var editViewModel = new EditShoppingListViewModel()
             {
-                Header = "New List",
-                AvailableItems = GetPreviousItems(),
-                AvailableStores = stores,
+                PreviousItems = _repository.GetCommonItems(settings.PreviousThreshold).Take(settings.NumberOfPreviousItems).OrderBy(n => n).ToArray(),
+                AllStores = stores,
+                PreviousStores = _repository.GetCommonStores(settings.PreviousThreshold).ToArray(),
                 SelectedItems = new string[0],
                 SelectedStore = selectedStore,
-                ShopplingListId = Guid.NewGuid()
+                ShopplingListId = Guid.NewGuid(),
+                AllItems = _repository.GetCommonItems(0).OrderBy(n => n).ToArray()
             };
 
             return View("EditShoppingList", editViewModel);
@@ -64,29 +66,38 @@ namespace ShoppingList.Controllers
 
         public IActionResult EditShoppingList(Guid id)
         {
-            var stores = _repository.GetStores().OrderBy(s => s.Name).ToArray();
+            var settings = _settings.Load();
+
+            var stores = _repository.GetStores().OrderBy(s => s.Name).Select(s => s.Name).ToArray();
             var sl = _repository.GetShoppingList(id);
             var selectedItems = sl.AllItems.Select(i => i.Name).ToArray();
-
+            var availableItems = _repository
+                .GetCommonItems(settings.PreviousThreshold)
+                .Except(selectedItems)
+                .Take(settings.NumberOfPreviousItems)
+                .OrderBy(n => n)
+                .ToArray();
             var editViewModel = new EditShoppingListViewModel() {
-                Header = "Edit List",
-                AvailableItems = GetPreviousItems(),
-                AvailableStores = stores,
+                PreviousItems = availableItems,
+                AllStores = stores,
+                PreviousStores = _repository.GetCommonStores(settings.PreviousThreshold).ToArray(),
                 SelectedItems = selectedItems,
-                SelectedStore = sl.Store,
-                ShopplingListId = sl.ID
+                SelectedStore = sl.Store.Name,
+                ShopplingListId = sl.ID,
+                AllItems = _repository.GetCommonItems(0).OrderBy(n => n).ToArray()
             };
 
             return View("EditShoppingList", editViewModel);
         }
 
-        private string[] GetPreviousItems() {
-            return _repository.GetCommonItems().Take(_settings.Load().NumberOfPreviousItems).OrderBy(n => n).ToArray();
-        }
-
         public IActionResult GoShopping(Guid? id) {
             var shoppingList = _repository.GetShoppingList(id.Value);
-            return View("GoShopping",shoppingList);
+            if (shoppingList.Store.IsReal) {
+                return View("GoShopping", shoppingList);
+            }
+            else {
+                return EditShoppingList(id.Value);
+            }
         }
 
         private string[] GetItems(string joinedItemsString)
@@ -101,6 +112,7 @@ namespace ShoppingList.Controllers
             var store = _repository.GetStores().FirstOrDefault(s => s.Name == storeName);
             if (store == null) {
                 store = _storeFactory.CreateStores(storeName).First();
+                _repository.SaveStore(store);
             }
             var sl = _repository.GetShoppingList(shoppingListId);
             if (sl == null) {

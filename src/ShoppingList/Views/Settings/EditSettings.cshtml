@@ -13,8 +13,15 @@
     <div class="form-group">
         <label for="numberOfPreviousItems">Number of items:</label>
         <input id="numberOfPreviousItems" class="form-control" asp-for="NumberOfPreviousItems"/>
-        <p class="help-block">Controls the number of previous items to show when editing a shopping list.</p>
+        <p class="help-block">Controls the number of previous items to show when editing a list.</p>
     </div>
 
-        <button type="submit" class="btn btn-success">Save</button>
+    <div class="form-group">
+        <label for="previousThreshold">Threshold for previous items:</label>
+        <input id="previousThreshold" class="form-control" asp-for="PreviousThreshold" />
+        <p class="help-block">Controls the numbers of times an item must have been used to show up as a previous item.</p>
+    </div>
+
+
+    <button type="submit" class="btn btn-success">Save</button>
 </form>
