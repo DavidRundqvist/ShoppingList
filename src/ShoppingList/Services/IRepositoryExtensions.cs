@@ -26,7 +26,7 @@ namespace ShoppingList.Services {
                 .Where(g => g.Count() >= previousThreshold)
                 .Select(g => g.Key.Name)
                 .OrderBy(n => n);
-            return commonStores;
+            return commonStores.Append(Store.None.Name).Distinct();
         }
     }
 }

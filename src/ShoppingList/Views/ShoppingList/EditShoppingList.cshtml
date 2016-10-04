@@ -155,7 +155,7 @@
                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
                     <ul id="color-dropdown-menu" class="dropdown-menu dropdown-menu-right" role="menu">
                         @foreach (var store in Model.PreviousStores) {
-                            <li onclick="SelectType('@store'); return false;"><a href="#" >@store</a></li>
+                            <li style="float:right;" onclick="SelectType('@store'); return false;"><a href="#" >@store</a></li>
                         }
                     </ul>
                 </div>
@@ -178,7 +178,7 @@
         <!-- Previous items -->
         <div class="col-xs-6">
             <div class="list-group" id="availableGroup">
-                <H3>Previous Items</H3>
+                <H3>Previous</H3>
                 @foreach (var item in Model.PreviousItems) {
                     <a id="@item" onclick="Click('@item'); return false;" href="#" class="list-group-item">@item</a>
                 }
