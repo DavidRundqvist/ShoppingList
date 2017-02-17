@@ -7,27 +7,19 @@
 
 <script type="text/javascript">
 
-    var selectedItems = @Html.Raw(JsonConvert.SerializeObject(this.Model.SelectedItems.ToArray()));
     var previousItems = @Html.Raw(JsonConvert.SerializeObject(this.Model.PreviousItems.ToArray()));
     var allItems = @Html.Raw(JsonConvert.SerializeObject(this.Model.AllItems.ToArray()));
     var allStores = @Html.Raw(JsonConvert.SerializeObject(this.Model.AllStores.ToArray()));
 
-    function Click(itemName) {
-        var selectedGroup = document.getElementById('selectedGroup');
-        var availableGroup = document.getElementById('availableGroup');
-        var item = document.getElementById(itemName);
 
-        if (selectedGroup.contains(item)) {
-            // unselect
-            availableGroup.appendChild(item);
-            var index = selectedItems.indexOf(itemName);
-            if (index >= 0) {
-                selectedItems.splice(index, 1);
-            }
-        } else if (availableGroup.contains(item)) {
-            // select
-            selectedItems.push(itemName);
-            selectedGroup.appendChild(item);
+    function SelectedGroup() {
+        return document.getElementById('selectedGroup');
+    }
+
+    function Click(itemName) {
+        var item = document.getElementById(itemName);
+        if (SelectedGroup().contains(item)) {
+            SelectedGroup().removeChild(item);
         }
     }
 
@@ -41,15 +33,29 @@
         Save(destination);
     }
 
+    function GetSelectedItems() {
+
+        var nodeList = SelectedGroup();
+        var childNodes = nodeList.getElementsByClassName("list-group-item");
+
+        childNodeArray = [];
+        for(i = 0; i < childNodes.length; i++){ 
+            childNodeArray[i] = childNodes[i];
+        }
+        var result = childNodeArray.map(function(node) { return node.id });
+        return result;
+    }
+
 
     function Save(destination) {
         var store = document.getElementById("StoreSelection").value;
-        if (store == null || store == "") {
+        if (store == null || store === "") {
             var warning = document.getElementById("SelectStoreWarning");
             warning.textContent = "Select a store";
             return;
         }
 
+        var selectedItems = GetSelectedItems();
         var parameters = "shoppingListId=" + "@Model.ShopplingListId.ToString()" + "&storeName=" + store + "&itemsToBuyJoined="  + selectedItems.join("§");
         var postUrl = "@Url.Action("SaveShoppingList", "ShoppingList")?" + parameters;
         $.post(postUrl, function(data) {
@@ -69,7 +75,6 @@
 
         var existingField = document.getElementById(itemName);
         if (existingField != null) {
-            Click(itemName);
             return;
         }
 
@@ -82,12 +87,10 @@
         element.setAttribute('href', '#');
         element.setAttribute('id', itemName);
 
-        selectedItems.push(itemName);
-        var selectedGroup = document.getElementById('selectedGroup');
-        selectedGroup.appendChild(element);
+        SelectedGroup().appendChild(element);
     }
 
-    function SelectType(typeName) {
+    function SelectStore(typeName) {
         document.getElementById('StoreSelection').value = typeName;
     }
 
@@ -144,24 +147,27 @@
 </div>
 
 <div class="container">
+
     <div class="row">
-        <div class='col-xs-6'>
-            <h3>Type</h3>
+        <div class='col-xs-12'>
+            <h3>Store</h3>
             <span id="SelectStoreWarning" class="label label-danger"></span>
-            
             <div class="input-group">
                 <input type="text" class="form-control" id="StoreSelection" value="@Model.SelectedStore">
                 <div class="input-group-btn">
                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
                     <ul id="color-dropdown-menu" class="dropdown-menu dropdown-menu-right" role="menu">
                         @foreach (var store in Model.PreviousStores) {
-                            <li style="text-align: right;" onclick="SelectType('@store'); return false;"><a href="#" >@store</a></li>
+                            <li style="text-align: right;" onclick="SelectStore('@store'); return false;"><a href="#">@store</a></li>
                         }
                     </ul>
                 </div>
             </div>
         </div>
-        <div class='col-xs-6'>
+    </div>
+
+    <div class="row">
+        <div class='col-xs-12'>
             <h3>Add Item</h3>
             <div class="input-group">
                 <input id="NewItemField" type="text" class="form-control" placeholder="chocolate..."
@@ -173,28 +179,19 @@
         </div>
     </div>
 
-    <div class="row">
 
-        <!-- Previous items -->
-        <div class="col-xs-6">
-            <div class="list-group" id="availableGroup">
-                <H3>Previous</H3>
-                @foreach (var item in Model.PreviousItems) {
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="list-group" id="selectedGroup">
+                <H3>To Buy</H3>
+                @foreach (var item in Model.SelectedItems)
+                {
                     <a id="@item" onclick="Click('@item'); return false;" href="#" class="list-group-item">@item</a>
                 }
             </div>
         </div>
-
-        <!-- To do -->
-        <div class="col-xs-6">
-            <div class="list-group" id="selectedGroup">
-                <H3>To Do</H3>
-                @foreach (var item in Model.SelectedItems) {
-                    <a id="@item" onclick="Click('@item'); return false;" href="#" class="list-group-item">@item</a>
-                }                
-            </div>
-        </div>
     </div>
+
 
 </div>
 

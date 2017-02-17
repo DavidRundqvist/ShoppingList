@@ -11,6 +11,8 @@ namespace ShoppingList
     {
         public static void Main(string[] args)
         {
+            args = args.Append("http://*:5000").ToArray();
+
             var host = new WebHostBuilder()
                 .UseKestrel()
                 .UseContentRoot(Directory.GetCurrentDirectory())

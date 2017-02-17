@@ -1,7 +1,7 @@
 ﻿@model List<ShoppingList.Models.Store>
 @using Newtonsoft.Json
 @{
-    ViewData["Title"] = "View Types";
+    ViewData["Title"] = "View Stores";
 }
 
 <script type="text/javascript">
@@ -40,12 +40,12 @@
 
 
 <h2>
-    <span class="label label-default">Types</span>
+    <span class="label label-default">Stores</span>
 </h2>
 
 <div class="container">
     <div class='col-xs-12'>
-        <h3>New Type</h3>
+        <h3>New Store</h3>
         <div class="input-group">
             <input id="NewStoreField" type="text" class="form-control" placeholder="walmart..."
                    onkeydown="if (event.keyCode == 13) CreateStore();" />
@@ -54,7 +54,7 @@
             </span>
         </div>
 
-        <h3>Types</h3>
+        <h3>Stores</h3>
         <div class="list-group" id="stores">
             @foreach (var item in Model) {
                 <div class="list-group-item">

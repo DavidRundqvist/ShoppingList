@@ -63,34 +63,33 @@
 
 
 <div class="container">
-    <div class="row">
-        <div class='col-xs-6'>
-            <!-- To buy -->
-            <div class="list-group" id="ToBuyGroup">
-                <H3>To Do</H3>
-                @foreach (var item in Model.ItemsToBuy) {
-                    <a id="@item.Name" onclick="Click('@item.Name'); return false;" href="#" class="list-group-item">
-                        <span id="checkmark" class="glyphicon glyphicon-ok" style="color: green; display: none"></span>
-                        @item.Name
-                    </a>
-                }
-            </div>
-        </div>
+        <div class='col-xs-12'>
+            <div class="row">
+                <!-- To buy -->
+                <div class="list-group" id="ToBuyGroup">
+                    <H3>To Do</H3>
+                    @foreach (var item in Model.ItemsToBuy)
+                    {
+                        <a id="@item.Name" onclick="Click('@item.Name'); return false;" href="#" class="list-group-item">
+                            <span id="checkmark" class="glyphicon glyphicon-ok" style="color: green; display: none"></span>
+                            @item.Name
+                        </a>
+                    }
+                </div>
 
-        <div class='col-xs-6'>
 
-            <!-- Bought -->
-            <div class="list-group" id="BoughtGroup">
-                <H3>Done</H3>
-                @foreach (var item in Model.BoughtItems)
-                {
-                    <a id="@item.Name" onclick="Click('@item.Name'); return false;" href="#" class="list-group-item">
-                        <span id="checkmark" class="glyphicon glyphicon-ok" style="color: green; display:inline" ></span>
-                        @item.Name
-                    </a>
-                }
+                <!-- Bought -->
+                <div class="list-group" id="BoughtGroup">
+                    <H3>Done</H3>
+                    @foreach (var item in Model.BoughtItems)
+                    {
+                        <a id="@item.Name" onclick="Click('@item.Name'); return false;" href="#" class="list-group-item">
+                            <span id="checkmark" class="glyphicon glyphicon-ok" style="color: green; display:inline"></span>
+                            @item.Name
+                        </a>
+                    }
+                </div>
             </div>
-        </div>
     </div>
 </div>
 
