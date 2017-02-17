@@ -52,13 +52,11 @@ namespace ShoppingList.Controllers
 
             var editViewModel = new EditShoppingListViewModel()
             {
-                PreviousItems = _repository.GetCommonItems(settings.PreviousThreshold).Take(settings.NumberOfPreviousItems).OrderBy(n => n).ToArray(),
-                AllStores = stores,
-                PreviousStores = _repository.GetCommonStores(settings.PreviousThreshold).ToArray(),
+                PreviousStores = stores,
                 SelectedItems = new string[0],
                 SelectedStore = selectedStore,
                 ShopplingListId = Guid.NewGuid(),
-                AllItems = _repository.GetCommonItems(0).OrderBy(n => n).ToArray()
+                PreviousItems = _repository.GetCommonItems(0).OrderBy(n => n).ToArray()
             };
 
             return View("EditShoppingList", editViewModel);
@@ -78,13 +76,11 @@ namespace ShoppingList.Controllers
                 .OrderBy(n => n)
                 .ToArray();
             var editViewModel = new EditShoppingListViewModel() {
-                PreviousItems = availableItems,
-                AllStores = stores,
-                PreviousStores = _repository.GetCommonStores(settings.PreviousThreshold).ToArray(),
+                PreviousStores = stores,
                 SelectedItems = selectedItems,
                 SelectedStore = sl.Store.Name,
                 ShopplingListId = sl.ID,
-                AllItems = _repository.GetCommonItems(0).OrderBy(n => n).ToArray()
+                PreviousItems = _repository.GetCommonItems(0).OrderBy(n => n).ToArray()
             };
 
             return View("EditShoppingList", editViewModel);
