@@ -13,7 +13,8 @@ namespace ShoppingList.Models {
 
         public IEnumerable<Item> BoughtItems => _items.Where(item => item.IsBought);
         public IEnumerable<Item> ItemsToBuy => _items.Where(item => !item.IsBought);
-        public IEnumerable<Item> AllItems => ItemsToBuy.Concat(BoughtItems);
+        public IEnumerable<Item> AllItems => _items;
+        public IEnumerable<string> AllItemNames => _items.Select(i => i.Name);
 
         public bool IsComplete => AllItems.All(item => item.IsBought);
 
@@ -21,9 +22,9 @@ namespace ShoppingList.Models {
         /// <summary>
         /// Creates a new shopping list
         /// </summary>
-        public ShoppingList(Store store, Guid id) {
-            Store = store;
-            ID = id ;
+        public ShoppingList() {
+            Store = Store.None;
+            ID = Guid.NewGuid();
             _items = new List<Item>();
         }
 
@@ -37,24 +38,57 @@ namespace ShoppingList.Models {
             ID = id;
         }
 
+        public void Add(params string[] itemNames)
+        {
+            var itemsToAdd = itemNames.Except(AllItemNames);
+            _items.AddRange(itemsToAdd.Select(name => new Item(name)));
+        }
+
+        public void Remove(params string[] itemNames)
+        {
+            var itemsToRemove = itemNames.Join(_items, name => name, item => item.Name, (name, item) => item).ToArray();
+            foreach (var item in itemsToRemove) {
+                _items.Remove(item);
+            }
+        }
+
         public string Description => Store.Name;
 
         public string Text => string.Join(", ", AllItems.Select(i => i.Name));
 
-        public void BuyItems(params string[] boughtItemNames) {
-            var boughtItems = boughtItemNames.Join(_items, name => name, item => item.Name, (name, item) => item).ToList();
-            var itemsToBuy = _items.Except(boughtItems).ToList();
-            foreach (var item in boughtItems) {
+        public void Buy(params string[] boughtItemNames)
+        {
+            var previouslyBought = _items.Where(i => i.IsBought).ToArray();
+            var previouslyNotBought = _items.Where(i => !i.IsBought).ToArray();
+            var newboughtItems = boughtItemNames.Join(previouslyNotBought, name => name, item => item.Name, (name, item) => item).ToArray();
+            foreach (var item in newboughtItems) {
                 item.IsBought = true;
             }
-            foreach(var item in itemsToBuy) {
+
+            // Reorder:
+            var theRest = _items.Except(previouslyBought).Except(newboughtItems).ToArray();
+            _items.Clear();
+            _items.AddRange(previouslyBought.Concat(newboughtItems).Concat(theRest));
+        }
+
+        public void UnBuy(params string[] unboughtItemNames)
+        {
+            var previouslyBought = _items.Where(i => i.IsBought).ToArray();
+            var newunboughtItems = unboughtItemNames.Join(previouslyBought, name => name, item => item.Name, (name, item) => item).ToArray();
+            foreach (var item in newunboughtItems)
+            {
                 item.IsBought = false;
             }
 
             // Reorder:
+            var currentlyBought = _items.Where(i => i.IsBought).ToArray();
+            var theRest = _items.Except(currentlyBought).Except(newunboughtItems).ToArray();
             _items.Clear();
-            _items.AddRange(boughtItems.Concat(itemsToBuy));
+            _items.AddRange(currentlyBought.Concat(newunboughtItems).Concat(theRest));
+
+
         }
+
 
         public bool Equals(ShoppingList other)
         {
@@ -76,11 +110,6 @@ namespace ShoppingList.Models {
             return ID.GetHashCode();
         }
 
-        public void ReplaceItems(params string[] itemsToBuy)
-        {
-            var currentItems = _items.ToDictionary(item => item.Name);
-            _items.Clear();
-            _items.AddRange(itemsToBuy.Select(name => currentItems.ContainsKey(name) ? currentItems[name] : new Item(name)));
-        }
+
     }
 }

@@ -51,7 +51,7 @@ namespace ShoppingList
                                                      Console.WriteLine($"Using data at {dataDir.FullName}");
                                                      return dataDir;
                                                  });
-            services.AddTransient<IRepository, JsonFileRepository>();
+            services.AddSingleton<IRepository, JsonFileRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

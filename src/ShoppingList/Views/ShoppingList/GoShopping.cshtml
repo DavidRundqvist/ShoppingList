@@ -1,4 +1,5 @@
 ﻿@model ShoppingList.Models.ShoppingList
+@using System.Linq
 @using Newtonsoft.Json
 @{
     ViewData["Title"] = "Go Shopping";
@@ -6,32 +7,34 @@
 
 <script type="text/javascript">
 
-    var boughtItems = @Html.Raw(JsonConvert.SerializeObject(this.Model.BoughtItems.Select(item => item.Name).ToArray()));
 
     function Click(item) {
         var element = document.getElementById(item);
-        var index = boughtItems.indexOf(item);
-        if (index >= 0) {
+        var boughtGroup = document.getElementById("BoughtGroup");
+
+        if (boughtGroup.contains(element)) {
+
             // Unbuy
             var toBuyGroup = document.getElementById("ToBuyGroup");
-            boughtItems.splice(index, 1);
             toBuyGroup.appendChild(element);
             element.querySelector("#checkmark").style = "color: green; display:none";
+
+            var parameters = "shoppingListId=@Model.ID" + "&itemName=" + item;
+            var postUrl = "@Url.Action("UnBuy", "ShoppingList")?" + parameters;
+            $.post(postUrl);
+
+
         } else {
             // Buy
-            var boughtGroup = document.getElementById("BoughtGroup");
-            boughtItems.push(item);
             boughtGroup.appendChild(element);
             element.querySelector("#checkmark").style = "color: green; display:inline";
+
+            var parameters = "shoppingListId=@Model.ID" + "&itemName=" + item;
+            var postUrl = "@Url.Action("Buy", "ShoppingList")?" + parameters;
+            $.post(postUrl);
         }
-        Save();
     }
 
-    function Save() {
-        var parameters = "shoppingListId=@Model.ID" + "&boughtItemsJoined=" + boughtItems.join("§");
-        var postUrl = "@Url.Action("BuyItems", "ShoppingList")?" + parameters;
-        $.post(postUrl);
-    }
 </script>
 
 
@@ -39,13 +42,12 @@
 <h2>
     <span class="label label-default">@Model.Description</span>
 </h2>
-<div>
-    <a asp-controller="ShoppingList" asp-action="EditShoppingList" asp-route-id="@Model.ID" class="btn btn-default">Edit</a>
-    <a asp-controller="ShoppingList" asp-action="ViewShoppingLists" class="btn btn-success">OK</a>
-</div>
 
 
 <div class="container">
+    <div>
+        <a asp-controller="ShoppingList" asp-action="EditShoppingList" asp-route-id="@Model.ID" class="btn btn-default">Edit</a>
+    </div>
     <div class='col-xs-12'>
         <div class="row">
             <!-- To buy -->

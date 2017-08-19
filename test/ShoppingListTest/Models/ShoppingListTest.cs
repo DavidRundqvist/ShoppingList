@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Linq;
 
 namespace ShoppingListTest.Models
 {
@@ -11,20 +12,42 @@ namespace ShoppingListTest.Models
         [TestInitialize]
         public void Setup()
         {
-            _sut = new ShoppingList.Models.ShoppingList(new ShoppingList.Models.Store("Coop", Guid.NewGuid()), Guid.NewGuid());
+            _sut = new ShoppingList.Models.ShoppingList();
+            
         }
 
         [TestMethod]
-        public void Should_be_completed_when_all_items_are_bought()
+        public void Should_reorder_when_buying()
         {
             // arrange
-            _sut.ReplaceItems("Bröd", "Kaffe", "Chips");
+            _sut.Add("A", "B", "C", "D", "E", "F");
 
             // act
-            _sut.BuyItems("Bröd", "Kaffe", "Chips");
+            _sut.Buy("D", "F");
+            _sut.Buy("B");
 
             // assert
-            Assert.IsTrue(_sut.IsComplete);
+            var expectedOrder = new[] {"D", "F", "B", "A", "C", "E"};
+            var actualOrder = _sut.AllItemNames.ToArray();
+            CollectionAssert.AreEqual(expectedOrder, actualOrder);
+
+        }
+
+        [TestMethod]
+        public void Should_reorder_when_unbuying()
+        {
+            // arrange
+            _sut.Add("A", "B", "C", "D", "E", "F");
+            _sut.Buy("A", "B", "C", "D");
+
+            // act
+            _sut.UnBuy("B", "D");
+
+            // assert
+            var expectedOrder = new[] { "A", "C", "B", "D", "E", "F" };
+            var actualOrder = _sut.AllItemNames.ToArray();
+            CollectionAssert.AreEqual(expectedOrder, actualOrder);
+
         }
 
     }

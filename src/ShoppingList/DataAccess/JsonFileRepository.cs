@@ -17,6 +17,9 @@ namespace ShoppingList.DataAccess
         private FileInfo StoresFile => new FileInfo(Path.Combine(_rootFolder.FullName, "Stores.json"));
         private FileInfo ShoppingListsFile => new FileInfo(Path.Combine(_rootFolder.FullName, "ShoppingLists.json"));
 
+        private readonly object _lock = new object();
+
+
         public JsonFileRepository(DirectoryInfo rootFolder, JsonSerializer serializer)
         {
             _rootFolder = rootFolder;
@@ -25,44 +28,21 @@ namespace ShoppingList.DataAccess
                 _rootFolder.Create();
         }
 
-        public IEnumerable<string> GetItems()
-        {
-            if (!ItemsFile.Exists)
-                return Enumerable.Empty<string>();
-
-            using (var fs = ItemsFile.OpenText())
-            {
-                return (List<string>) _serializer.Deserialize(fs, typeof(List<String>));
-            }
-
-        }
-
-        public void AddItem(IEnumerable<string> items)
-        {
-            var allItems = GetItems().Concat(items).Distinct().ToList();
-            using (var fs = ItemsFile.CreateText()) {
-                _serializer.Serialize(fs, allItems);                
-            }
-        }
-
-        public void RemoveItem(IEnumerable<string> items)
-        {
-            var allItems = GetItems().Except(items).Distinct().ToList();
-            using (var fs = ItemsFile.CreateText())
-            {
-                _serializer.Serialize(fs, allItems);
-            }
-        }
 
         public IEnumerable<Store> GetStores()
         {
             if (!StoresFile.Exists)
                 return Enumerable.Empty<Store>();
-
-            using (var fs = StoresFile.OpenText())
-            using (var reader = new JsonTextReader(fs))
+            lock (_lock)
             {
-                return _serializer.Deserialize<List<StoreDTO>>(reader).Select(dto => dto.ToModel()).Concat(new[] { Store.None });
+                using (var fs = StoresFile.OpenText())
+                {
+                    using (var reader = new JsonTextReader(fs))
+                    {
+                        return _serializer.Deserialize<List<StoreDTO>>(reader).Select(dto => dto.ToModel())
+                            .Concat(new[] {Store.None});
+                    }
+                }
             }
 
         }
@@ -90,16 +70,19 @@ namespace ShoppingList.DataAccess
 
         public IEnumerable<Models.ShoppingList> GetAllShoppingLists()
         {
-            if (!ShoppingListsFile.Exists)
-                return Enumerable.Empty<Models.ShoppingList>();
-
-            using (var fs = ShoppingListsFile.OpenText())
-            using (var reader = new JsonTextReader(fs))
+            lock (_lock)
             {
-                var stores = GetStores().ToList();
-                var shoppingListDtos = _serializer.Deserialize<List<ShoppingListDTO>>(reader);
-                var result = shoppingListDtos.Select(dto => dto.ToModel(stores));
-                return result;
+                if (!ShoppingListsFile.Exists)
+                    return Enumerable.Empty<Models.ShoppingList>();
+
+                using (var fs = ShoppingListsFile.OpenText())
+                using (var reader = new JsonTextReader(fs))
+                {
+                    var stores = GetStores().ToList();
+                    var shoppingListDtos = _serializer.Deserialize<List<ShoppingListDTO>>(reader);
+                    var result = shoppingListDtos.Select(dto => dto.ToModel(stores));
+                    return result;
+                }
             }
         }
 
@@ -112,8 +95,12 @@ namespace ShoppingList.DataAccess
         {
             var allLists = lists.Concat(GetAllShoppingLists()).Distinct();
             var dtos = allLists.Select(l => l.ToDto()).ToList();
-            using (var fs = ShoppingListsFile.CreateText()) {
-                _serializer.Serialize(fs, dtos);
+            lock (_lock) { 
+
+                using (var fs = ShoppingListsFile.CreateText()) {
+                
+                    _serializer.Serialize(fs, dtos);
+                }                
             }
         }
     }

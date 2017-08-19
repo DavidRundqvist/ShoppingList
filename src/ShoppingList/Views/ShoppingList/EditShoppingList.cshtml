@@ -1,4 +1,5 @@
 ﻿@model ShoppingList.ViewModels.EditShoppingListViewModel
+@using System.Linq
 @using Newtonsoft.Json
 @{
     ViewData["Title"] = "Edit Shopping List";
@@ -19,47 +20,21 @@
         var item = document.getElementById(itemName);
         if (SelectedGroup().contains(item)) {
             SelectedGroup().removeChild(item);
+
+            var parameters = "shoppingListId=@Model.ShopplingListId" + "&itemName=" + itemName;
+            var postUrl = "@Url.Action("Remove", "ShoppingList")?" + parameters;
+            $.post(postUrl);
         }
     }
 
-    function SaveAndViewLists() {
+    function ViewLists() {
         var destination = "@Url.Action("ViewShoppingLists", "ShoppingList")";
-        Save(destination);
+        window.location.href = destination;
     }
 
-    function SaveAndGoShopping() {
+    function GoShopping() {        
         var destination = "@Url.Action("GoShopping", "ShoppingList")?id=" + "@Model.ShopplingListId.ToString()";
-        Save(destination);
-    }
-
-    function GetSelectedItems() {
-
-        var nodeList = SelectedGroup();
-        var childNodes = nodeList.getElementsByClassName("list-group-item");
-
-        childNodeArray = [];
-        for(i = 0; i < childNodes.length; i++){ 
-            childNodeArray[i] = childNodes[i];
-        }
-        var result = childNodeArray.map(function(node) { return node.id });
-        return result;
-    }
-
-
-    function Save(destination) {
-        var store = document.getElementById("StoreSelection").value;
-        if (store == null || store === "") {
-            var warning = document.getElementById("SelectStoreWarning");
-            warning.textContent = "Select a store";
-            return;
-        }
-
-        var selectedItems = GetSelectedItems();
-        var parameters = "shoppingListId=" + "@Model.ShopplingListId.ToString()" + "&storeName=" + store + "&itemsToBuyJoined="  + selectedItems.join("§");
-        var postUrl = "@Url.Action("SaveShoppingList", "ShoppingList")?" + parameters;
-        $.post(postUrl, function(data) {
-            window.location.href = destination;
-        });
+        window.location.href = destination;
     }
 
 
@@ -87,10 +62,19 @@
         element.setAttribute('id', itemName);
 
         SelectedGroup().appendChild(element);
+
+        var parameters = "shoppingListId=@Model.ShopplingListId" + "&itemName=" + itemName;
+        var postUrl = "@Url.Action("Add", "ShoppingList")?" + parameters;
+        $.post(postUrl);
+
+        textField.focus();
     }
 
-    function SelectStore(typeName) {
-        document.getElementById('StoreSelection').value = typeName;
+    function SelectStore(storeName) {
+        document.getElementById('StoreSelection').value = storeName;
+        var parameters = "shoppingListId=@Model.ShopplingListId" + "&storeName=" + storeName;
+        var postUrl = "@Url.Action("SelectStore", "ShoppingList")?" + parameters;
+        $.post(postUrl);
     }
 
 
@@ -139,20 +123,18 @@
 
 <h2><span class="label label-default">Edit List</span></h2>
 
-<div>
-    <button type="button" class="btn btn-success" onclick="SaveAndViewLists()">Save</button>
-    <button type="button" class="btn btn-default" onclick="SaveAndGoShopping()">Go</button>
-    <a asp-controller="ShoppingList" asp-action="ViewShoppingLists" class="btn btn-danger">Cancel</a>
-</div>
 
 <div class="container">
+    <div>
+        <button type="button" class="btn btn-default" onclick="GoShopping()">Go Shop</button>
+    </div>
 
     <div class="row">
         <div class='col-xs-12'>
             <h3>Store</h3>
             <span id="SelectStoreWarning" class="label label-danger"></span>
             <div class="input-group">
-                <input type="text" class="form-control" id="StoreSelection" value="@Model.SelectedStore">
+                <input type="text" class="form-control" id="StoreSelection" onchange="SelectStore(this.value)" value="@Model.SelectedStore">
                 <div class="input-group-btn">
                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
                     <ul id="color-dropdown-menu" class="dropdown-menu dropdown-menu-right" role="menu">
