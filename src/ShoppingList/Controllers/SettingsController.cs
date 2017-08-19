@@ -6,6 +6,7 @@ using ShoppingList.Models;
 using ShoppingList.Services;
 using ShoppingList.ViewModels;
 
+
 namespace ShoppingList.Controllers {
     public class SettingsController : Controller {
         private readonly SettingsPersistence _settingsPersistence;

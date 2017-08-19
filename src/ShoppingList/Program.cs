@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
 namespace ShoppingList
@@ -11,16 +12,13 @@ namespace ShoppingList
     {
         public static void Main(string[] args)
         {
-//            args = args.Append("http://localhost:5000").ToArray();
-
-            var host = new WebHostBuilder()
-                .UseKestrel()
-                .UseContentRoot(Directory.GetCurrentDirectory())
-                .UseStartup<Startup>()
-                .UseUrls(args)
-                .Build();
-
-            host.Run();
+            BuildWebHost(args).Run();
         }
+
+        public static IWebHost BuildWebHost(string[] args) =>
+            WebHost.CreateDefaultBuilder(args)
+                .UseUrls("http://*:5000")
+                .UseStartup<Startup>()
+                .Build();
     }
 }
