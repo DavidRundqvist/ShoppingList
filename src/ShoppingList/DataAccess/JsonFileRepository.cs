@@ -13,9 +13,9 @@ namespace ShoppingList.DataAccess
         private readonly DirectoryInfo _rootFolder;
         private readonly JsonSerializer _serializer;
 
-        private FileInfo ItemsFile => new FileInfo(Path.Combine(_rootFolder.FullName, "Items.json"));
         private FileInfo StoresFile => new FileInfo(Path.Combine(_rootFolder.FullName, "Stores.json"));
         private FileInfo ShoppingListsFile => new FileInfo(Path.Combine(_rootFolder.FullName, "ShoppingLists.json"));
+        private FileInfo RecipesFile => new FileInfo(Path.Combine(_rootFolder.FullName, "Recipes.json"));
 
         private readonly object _lock = new object();
 
@@ -31,10 +31,10 @@ namespace ShoppingList.DataAccess
 
         public IEnumerable<Store> GetStores()
         {
-            if (!StoresFile.Exists)
-                return Enumerable.Empty<Store>();
             lock (_lock)
             {
+                if (!StoresFile.Exists)
+                    return Enumerable.Empty<Store>();
                 using (var fs = StoresFile.OpenText())
                 {
                     using (var reader = new JsonTextReader(fs))
@@ -44,15 +44,18 @@ namespace ShoppingList.DataAccess
                     }
                 }
             }
-
         }
 
         public void SaveStore(params Store[] stores)
         {
-            var allStores = stores.Concat(GetStores()).Where(s => s.IsReal).Distinct();
-            var dtos = allStores.Select(m => m.ToDto()).ToList();
-            using (var fs = StoresFile.CreateText()) {
-                _serializer.Serialize(fs, dtos);
+            lock (_lock)
+            {
+                var allStores = stores.Concat(GetStores()).Where(s => s.IsReal).Distinct();
+                var dtos = allStores.Select(m => m.ToDto()).ToList();
+                using (var fs = StoresFile.CreateText())
+                {
+                    _serializer.Serialize(fs, dtos);
+                }
             }
         }
 
@@ -62,10 +65,13 @@ namespace ShoppingList.DataAccess
             var storesToKeep = currentStores.Except(storesToRemove);
 
             var dtos = storesToKeep.Select(m => m.ToDto()).ToList();
-            using (var fs = StoresFile.CreateText()) {
-                _serializer.Serialize(fs, dtos);
+            lock (_lock)
+            {
+                using (var fs = StoresFile.CreateText())
+                {
+                    _serializer.Serialize(fs, dtos);
+                }
             }
-
         }
 
         public IEnumerable<Models.ShoppingList> GetAllShoppingLists()
@@ -102,6 +108,55 @@ namespace ShoppingList.DataAccess
                     _serializer.Serialize(fs, dtos);
                 }                
             }
+        }
+
+        public IEnumerable<Recipe> GetRecipes()
+        {
+            lock (_lock)
+            {
+                if (!RecipesFile.Exists)
+                    return Enumerable.Empty<Recipe>();
+
+                using (var fs = RecipesFile.OpenText())
+                {
+                    using (var reader = new JsonTextReader(fs))
+                    {
+                        return _serializer.Deserialize<List<RecipeDTO>>(reader).Select(dto => dto.ToModel());
+                    }
+                }
+            }
+        }
+
+        public void Save(Recipe recipe)
+        {
+            var recipes = GetRecipes().ToList();
+            recipes.RemoveAll(r => r.Name.Equals(recipe.Name, StringComparison.InvariantCultureIgnoreCase));
+            recipes.Add(recipe);
+            var dtos = recipes.Select(r => r.ToDTO());
+
+            lock (_lock)
+            {
+                using (var fs = RecipesFile.CreateText())
+                {
+                    _serializer.Serialize(fs, dtos);
+                }
+            }
+
+        }
+
+        public void Delete(Recipe recipe)
+        {
+            var recipes = GetRecipes().ToList();
+            recipes.RemoveAll(r => r.Name.Equals(recipe.Name, StringComparison.InvariantCultureIgnoreCase));
+            var dtos = recipes.Select(r => r.ToDTO());
+            lock (_lock)
+            {
+                using (var fs = RecipesFile.CreateText())
+                {
+                    _serializer.Serialize(fs, dtos);
+                }
+            }
+
         }
     }
 }

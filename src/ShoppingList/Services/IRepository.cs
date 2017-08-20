@@ -17,5 +17,9 @@ namespace ShoppingList.Services {
         /// </summary>
         Models.ShoppingList GetShoppingList(Guid id);
         void Save(params Models.ShoppingList[] lists);
+        IEnumerable<Recipe> GetRecipes();
+        void Save(Recipe recipe);
+        void Delete(Recipe recipe);
+
     }
 }

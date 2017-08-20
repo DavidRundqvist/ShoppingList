@@ -44,5 +44,20 @@ namespace ShoppingList.Services {
             var newLists = lists.Except(_shoppingLists);
             _shoppingLists.InsertRange(0, newLists);
         }
+
+        public IEnumerable<Recipe> GetRecipes()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Save(Recipe recipe)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Delete(Recipe recipe)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

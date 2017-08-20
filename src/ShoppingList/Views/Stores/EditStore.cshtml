@@ -67,12 +67,15 @@
 <h2>
     <span class="label label-default">Edit Store</span>
 </h2>
-<div>
-    <button type="button" class="btn btn-success" onclick="Save()">Save</button>
-    <a asp-controller="Stores" asp-action="ViewStores" class="btn btn-danger">Cancel</a>
-</div>
+
 
 <div class="container">
+    
+    <div>
+        <button type="button" class="btn btn-success" onclick="Save()">Save</button>
+        <a asp-controller="Stores" asp-action="ViewStores" class="btn btn-danger">Cancel</a>
+    </div>
+
     <div class="col-xs-12">
 
         <div class="row">
@@ -86,14 +89,14 @@
                 {
                     <div class="list-group-item" id="@item">
 
-                        <a onclick="Down('@item'); return false;" href="#">
+                        <a onclick="Down('@item');return false;" href="#">
                             <span class="glyphicon glyphicon-arrow-down" style="float: left; margin-right: 10px"></span>
                         </a>
-                        <a onclick="Up('@item'); return false;" href="#">
+                        <a onclick="Up('@item');return false;" href="#">
                             <span class="glyphicon glyphicon-arrow-up" style="float: left; margin-right: 10px"></span>
                         </a>
                         @item
-                        <a onclick="Delete('@item'); return false;" href="#">
+                        <a onclick="Delete('@item');return false;" href="#">
                             <span class="glyphicon glyphicon-remove" style="float: right; color: red"></span>
                         </a>
 
