@@ -22,9 +22,9 @@ namespace ShoppingList.Models {
         /// <summary>
         /// Creates a new shopping list
         /// </summary>
-        public ShoppingList() {
+        public ShoppingList(Guid id) {
             Store = Store.None;
-            ID = Guid.NewGuid();
+            ID = id;
             _items = new List<Item>();
         }
 

@@ -137,7 +137,7 @@ namespace ShoppingList.Controllers
 
         private Models.ShoppingList GetOrCreateShoppingList(Guid shoppingListId)
         {
-            var sl = _repository.GetShoppingList(shoppingListId) ?? new Models.ShoppingList();
+            var sl = _repository.GetShoppingList(shoppingListId) ?? new Models.ShoppingList(shoppingListId);
             return sl;
         }
 

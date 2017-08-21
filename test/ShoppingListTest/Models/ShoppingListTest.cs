@@ -12,7 +12,7 @@ namespace ShoppingListTest.Models
         [TestInitialize]
         public void Setup()
         {
-            _sut = new ShoppingList.Models.ShoppingList();
+            _sut = new ShoppingList.Models.ShoppingList(Guid.NewGuid());
             
         }
 
