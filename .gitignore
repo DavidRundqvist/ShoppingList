@@ -5,3 +5,5 @@ src/ShoppingList/project.lock.json
 test/ShoppingListTest/obj/*
 test/ShoppingListTest/bin/*
 test/ShoppingListTest/project.lock.json
+.vs/*
+*.suo

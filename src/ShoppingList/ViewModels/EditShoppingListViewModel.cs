@@ -12,5 +12,7 @@ namespace ShoppingList.ViewModels {
 
         public Guid ShopplingListId { get; set; }
 
+        public Recipe[] Recipes { get; set; }
+
     }
 }

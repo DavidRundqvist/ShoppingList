@@ -11,6 +11,17 @@
     var previousItems = @Html.Raw(JsonConvert.SerializeObject(this.Model.PreviousItems.ToArray()));
     var previousStores = @Html.Raw(JsonConvert.SerializeObject(this.Model.PreviousStores.ToArray()));
 
+    var recipes = [];
+
+    @foreach (var recipe in Model.Recipes)
+    {
+        <text>
+            recipes[@Html.Raw(JsonConvert.SerializeObject(@recipe.Name))] = @Html.Raw(JsonConvert.SerializeObject(recipe.Items.ToArray()));
+        </text>
+    }
+
+
+
 
     function SelectedGroup() {
         return document.getElementById('selectedGroup');
@@ -32,19 +43,27 @@
         window.location.href = destination;
     }
 
-    function GoShopping() {        
+    function GoShopping() {
         var destination = "@Url.Action("GoShopping", "ShoppingList")?id=" + "@Model.ShopplingListId.ToString()";
         window.location.href = destination;
     }
 
 
+
     function CreateItem() {
         var textField = document.getElementById('NewItemField');
         var itemName = textField.value;
-        textField.value = null;
         if (itemName == null || itemName == "")
             return;
 
+        AddItem(itemName)
+
+        textField.value = null;
+        textField.focus();
+    }
+
+
+    function AddItem(itemName) {
         itemName = itemName.toLowerCase();
 
         var existingField = document.getElementById(itemName);
@@ -67,7 +86,15 @@
         var postUrl = "@Url.Action("Add", "ShoppingList")?" + parameters;
         $.post(postUrl);
 
-        textField.focus();
+    }
+
+    function AddRecipe(recipeName) {
+
+        var recipe = recipes[recipeName];
+        for (var i = 0; i < recipe.length; i++) {
+            var item = recipe[i];
+            AddItem(item)            
+        }
     }
 
     function SelectStore(storeName) {
@@ -176,5 +203,20 @@
 
 </div>
 
+<hr style="border-color: gray" />
 
 
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="list-group" id="recipes">
+                <H3>Recipes</H3>
+                @foreach (var item in Model.Recipes)  {
+                    <a id="@item" onclick="AddRecipe('@item.Name'); return false;" href="#" class="list-group-item">@item.Name</a>
+                }
+            </div>
+        </div>
+    </div>
+
+
+</div>
