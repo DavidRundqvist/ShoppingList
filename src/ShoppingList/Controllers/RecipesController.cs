@@ -18,7 +18,7 @@ namespace ShoppingList.Controllers
 
         public IActionResult ViewRecipes()
         {
-            return View("ViewRecipes", _repository.GetRecipes().ToArray());
+            return View("ViewRecipes", _repository.GetRecipes().ToList());
         }
 
         public IActionResult CreateRecipe()
