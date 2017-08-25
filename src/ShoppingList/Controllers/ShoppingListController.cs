@@ -80,6 +80,12 @@ namespace ShoppingList.Controllers
             return View("EditShoppingList", editViewModel);
         }
 
+        public IActionResult DeleteShoppingList(Guid id)
+        {
+            _repository.DeleteShoppingList(id);
+            return new OkResult();
+        }
+
         public IActionResult GoShopping(Guid? id) {
             var shoppingList = _repository.GetShoppingList(id.Value);
             if (shoppingList.Store.IsReal) {
@@ -92,55 +98,31 @@ namespace ShoppingList.Controllers
 
         public IActionResult SelectStore(Guid shoppingListId, string storeName)
         {
-            var sl = _repository.GetShoppingList(shoppingListId);
-            var store = _repository.GetStores().FirstOrDefault(s => s.Name == storeName);
-            if (store == null)
-            {
-                store = new Store(storeName, Guid.NewGuid());
-                _repository.SaveStore(store);
-            }
-            sl.Store = store;
-            _repository.Save(sl);
+            _repository.SetStore(shoppingListId, storeName);
             return new OkResult();
         }
-
-
 
         public IActionResult Add(Guid shoppingListId, string itemName)
         {
-            var sl = GetOrCreateShoppingList(shoppingListId);
-            sl.Add(itemName);
-            _repository.Save(sl);
+            _repository.AddItem(shoppingListId, itemName);
             return new OkResult();
         }
+
         public IActionResult Remove(Guid shoppingListId, string itemName)
         {
-            var sl = GetOrCreateShoppingList(shoppingListId);
-            sl.Remove(itemName);
-            _repository.Save(sl);
+            _repository.RemoveItem(shoppingListId, itemName);
             return new OkResult();
         }
-
-
 
         public IActionResult Buy(Guid shoppingListId, string itemName) {
-            var sl = GetOrCreateShoppingList(shoppingListId);
-            sl.Buy(itemName);
-            _repository.Save(sl);
-            return new OkResult();
-        }
-        public IActionResult UnBuy(Guid shoppingListId, string itemName)
-        {
-            var sl = GetOrCreateShoppingList(shoppingListId);
-            sl.UnBuy(itemName);
-            _repository.Save(sl);
+            _repository.BuyItem(shoppingListId, itemName);
             return new OkResult();
         }
 
-        private Models.ShoppingList GetOrCreateShoppingList(Guid shoppingListId)
+        public IActionResult UnBuy(Guid shoppingListId, string itemName)
         {
-            var sl = _repository.GetShoppingList(shoppingListId) ?? new Models.ShoppingList(shoppingListId);
-            return sl;
+            _repository.UnbuyItem(shoppingListId, itemName);
+            return new OkResult();
         }
 
     }

@@ -44,10 +44,25 @@
     }
 
     function GoShopping() {
+        if (document.getElementById('StoreSelection').value === "<Unknown>") {
+            alert("Need to select a store");
+            return;
+        }
+
         var destination = "@Url.Action("GoShopping", "ShoppingList")?id=" + "@Model.ShopplingListId.ToString()";
         window.location.href = destination;
     }
 
+    function DeleteList() {
+        var r = confirm("Really delete this shopping list?");
+        if (r == true) {
+            var parameters = "id=@Model.ShopplingListId";
+            var postUrl = "@Url.Action("DeleteShoppingList", "ShoppingList")?" + parameters;
+            $.post(postUrl, function(data) {
+                ViewLists();
+            });
+        }
+    }
 
 
     function CreateItem() {
@@ -93,7 +108,7 @@
         var recipe = recipes[recipeName];
         for (var i = 0; i < recipe.length; i++) {
             var item = recipe[i];
-            AddItem(item)            
+            AddItem(item)
         }
     }
 
@@ -140,12 +155,10 @@
             name: 'newStores',
             source: storeSearchEngine
         });
-
     });
 
 
 </script>
-
 
 
 <h2><span class="label label-default">Edit List</span></h2>
@@ -154,6 +167,7 @@
 <div class="container">
     <div>
         <button type="button" class="btn btn-default" onclick="GoShopping()">Go Shop</button>
+        <button type="button" class="btn btn-default" onclick="window.location.reload(true);">Refresh</button>
     </div>
 
     <div class="row">
@@ -217,6 +231,12 @@
             </div>
         </div>
     </div>
+</div>
 
+<hr style="border-color: gray" />
 
+<div class="container">
+    <div>
+        <button type="button" class="btn btn-default" onclick="DeleteList()">Delete...</button>
+    </div>
 </div>

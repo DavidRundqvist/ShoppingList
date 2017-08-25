@@ -40,7 +40,6 @@ namespace ShoppingList
 
             services.AddTransient<JsonSerializer>();
             services.AddTransient<StoreFactory>();
-            services.AddTransient<TestData>();
             services.AddTransient<SettingsPersistence>();
             services.AddSingleton<DirectoryInfo>(sp => {
                                                      var dataPath = Configuration.GetSection("DataPath").Value;

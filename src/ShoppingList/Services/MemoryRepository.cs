@@ -59,5 +59,35 @@ namespace ShoppingList.Services {
         {
             throw new NotImplementedException();
         }
+
+        public void AddItem(Guid shoppingListId, string item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RemoveItem(Guid shoppingListId, string item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void BuyItem(Guid shoppingListId, string item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UnbuyItem(Guid shoppingListId, string item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetStore(Guid shoppingListId, string storeName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void DeleteShoppingList(Guid id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

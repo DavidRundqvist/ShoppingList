@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using ShoppingList.Models;
 using ShoppingList.Services;
 using System.Linq;
+using ShoppingList = ShoppingList.Models.ShoppingList;
 
 namespace ShoppingList.DataAccess
 {
@@ -82,12 +83,14 @@ namespace ShoppingList.DataAccess
                     return Enumerable.Empty<Models.ShoppingList>();
 
                 using (var fs = ShoppingListsFile.OpenText())
-                using (var reader = new JsonTextReader(fs))
                 {
-                    var stores = GetStores().ToList();
-                    var shoppingListDtos = _serializer.Deserialize<List<ShoppingListDTO>>(reader);
-                    var result = shoppingListDtos.Select(dto => dto.ToModel(stores));
-                    return result;
+                    using (var reader = new JsonTextReader(fs))
+                    {
+                        var stores = GetStores().ToList();
+                        var shoppingListDtos = _serializer.Deserialize<List<ShoppingListDTO>>(reader);
+                        var result = shoppingListDtos.Select(dto => dto.ToModel(stores));
+                        return result;
+                    }
                 }
             }
         }
@@ -95,19 +98,6 @@ namespace ShoppingList.DataAccess
         public Models.ShoppingList GetShoppingList(Guid id) {
             var allShoppingLists = GetAllShoppingLists();
             return allShoppingLists.FirstOrDefault(sl => sl.ID == id);
-        }
-
-        public void Save(params Models.ShoppingList[] lists)
-        {
-            var allLists = lists.Concat(GetAllShoppingLists()).Distinct();
-            var dtos = allLists.Select(l => l.ToDto()).ToList();
-            lock (_lock) { 
-
-                using (var fs = ShoppingListsFile.CreateText()) {
-                
-                    _serializer.Serialize(fs, dtos);
-                }                
-            }
         }
 
         public IEnumerable<Recipe> GetRecipes()
@@ -157,6 +147,100 @@ namespace ShoppingList.DataAccess
                 }
             }
 
+        }
+
+        public void AddItem(Guid shoppingListId, string item)
+        {
+            ModifyList(shoppingListId, l => l.Add(item));
+        }
+
+        public void RemoveItem(Guid shoppingListId, string item)
+        {
+            ModifyList(shoppingListId, l => l.Remove(item));
+        }
+
+        public void BuyItem(Guid shoppingListId, string item)
+        {
+            ModifyList(shoppingListId, l => l.Buy(item));
+        }
+
+        public void UnbuyItem(Guid shoppingListId, string item)
+        {
+            ModifyList(shoppingListId, l => l.UnBuy(item));
+        }
+
+        public void SetStore(Guid shoppingListId, string storeName)
+        {
+            var store = GetStores().FirstOrDefault(s => s.Name == storeName);
+            if (store == null)
+            {
+                store = new Store(storeName, Guid.NewGuid());
+                SaveStore(store);
+            }
+            ModifyList(shoppingListId, l => l.Store = store);
+        }
+
+        public void DeleteShoppingList(Guid shoppingListId)
+        {
+            // Load
+            List<ShoppingListDTO> allLists = null;
+            if (ShoppingListsFile.Exists)
+            {
+                using (var fs = ShoppingListsFile.OpenText())
+                {
+                    using (var reader = new JsonTextReader(fs))
+                    {
+                        allLists = _serializer.Deserialize<List<ShoppingListDTO>>(reader);
+                    }
+                }
+            }
+            else
+                allLists = new List<ShoppingListDTO>();
+            var listDto = allLists.FirstOrDefault(l => l.ID == shoppingListId);
+            if (listDto != null)
+                allLists.Remove(listDto);
+
+            // Save
+            using (var fs = ShoppingListsFile.CreateText())
+            {
+                _serializer.Serialize(fs, allLists);
+            }
+        }
+
+        private void ModifyList(Guid shoppingListId, Action<Models.ShoppingList> modification)
+        {
+            lock (_lock)
+            {
+                // Load
+                List<ShoppingListDTO> allLists = null;
+                if (ShoppingListsFile.Exists)
+                {
+                    using (var fs = ShoppingListsFile.OpenText())
+                    {
+                        using (var reader = new JsonTextReader(fs))
+                        {
+                            allLists = _serializer.Deserialize<List<ShoppingListDTO>>(reader);
+                        }
+                    }
+                }
+                else
+                    allLists = new List<ShoppingListDTO>();
+                var listDto = allLists.FirstOrDefault(l => l.ID == shoppingListId);
+                if (listDto != null)
+                    allLists.Remove(listDto);
+                var list = listDto?.ToModel(GetStores().ToList()) ?? new Models.ShoppingList(shoppingListId);
+
+                // Modify
+                modification(list);
+                listDto = list.ToDto();
+                allLists.Insert(0, listDto);
+
+                // Save
+                using (var fs = ShoppingListsFile.CreateText())
+                {
+                    _serializer.Serialize(fs, allLists);
+                }
+            }
         }
     }
 }
