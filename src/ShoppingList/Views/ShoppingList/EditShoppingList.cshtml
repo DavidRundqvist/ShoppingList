@@ -8,6 +8,9 @@
 
 <script type="text/javascript">
 
+    document.body.style.backgroundColor = "#FFFCB7";
+
+
     var previousItems = @Html.Raw(JsonConvert.SerializeObject(this.Model.PreviousItems.ToArray()));
     var previousStores = @Html.Raw(JsonConvert.SerializeObject(this.Model.PreviousStores.ToArray()));
 
@@ -154,7 +157,7 @@
         }, {
             name: 'newStores',
             source: storeSearchEngine
-        });
+            });        
     });
 
 
@@ -164,79 +167,84 @@
 <h2><span class="label label-default">Edit List</span></h2>
 
 
-<div class="container">
-    <div>
-        <button type="button" class="btn btn-default" onclick="GoShopping()">Go Shop</button>
-        <button type="button" class="btn btn-default" onclick="window.location.reload(true);">Refresh</button>
+
+
+    <div class="container">
+        <div>
+            <button type="button" class="btn btn-default" onclick="GoShopping()">Go Shop</button>
+            <button type="button" class="btn btn-default" onclick="window.location.reload(true);">Refresh</button>
+        </div>
+
+        <div class="row">
+            <div class='col-xs-12'>
+                <h3>Store</h3>
+                <span id="SelectStoreWarning" class="label label-danger"></span>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="StoreSelection" onchange="SelectStore(this.value)" value="@Model.SelectedStore">
+                    <div class="input-group-btn">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+                        <ul id="color-dropdown-menu" class="dropdown-menu dropdown-menu-right" role="menu">
+                            @foreach (var store in Model.PreviousStores)
+                            {
+                                <li style="text-align: right;" onclick="SelectStore('@store'); return false;"><a href="#">@store</a></li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class='col-xs-12'>
+                <h3>Add Item</h3>
+                <div class="input-group">
+                    <input id="NewItemField" type="text" class="form-control" placeholder="chocolate..."
+                           onkeydown="if (event.keyCode == 13) CreateItem();" />
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button" onclick="CreateItem()">Add</button>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="list-group" id="selectedGroup">
+                    <H3>To Buy</H3>
+                    @foreach (var item in Model.SelectedItems)
+                    {
+                        <a id="@item" onclick="Click('@item'); return false;" href="#" class="list-group-item">@item</a>
+                    }
+                </div>
+            </div>
+        </div>
+
+
     </div>
 
-    <div class="row">
-        <div class='col-xs-12'>
-            <h3>Store</h3>
-            <span id="SelectStoreWarning" class="label label-danger"></span>
-            <div class="input-group">
-                <input type="text" class="form-control" id="StoreSelection" onchange="SelectStore(this.value)" value="@Model.SelectedStore">
-                <div class="input-group-btn">
-                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
-                    <ul id="color-dropdown-menu" class="dropdown-menu dropdown-menu-right" role="menu">
-                        @foreach (var store in Model.PreviousStores) {
-                            <li style="text-align: right;" onclick="SelectStore('@store'); return false;"><a href="#">@store</a></li>
-                        }
-                    </ul>
+    <hr style="border-color: gray" />
+
+
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="list-group" id="recipes">
+                    <H3>Recipes</H3>
+                    @foreach (var item in Model.Recipes)
+                    {
+                        <a id="@item" onclick="AddRecipe('@item.Name'); return false;" href="#" class="list-group-item">@item.Name</a>
+                    }
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="row">
-        <div class='col-xs-12'>
-            <h3>Add Item</h3>
-            <div class="input-group">
-                <input id="NewItemField" type="text" class="form-control" placeholder="chocolate..."
-                       onkeydown="if (event.keyCode == 13) CreateItem();"/>
-                <span class="input-group-btn">
-                    <button class="btn btn-default" type="button" onclick="CreateItem()">Add</button>
-                </span>
-            </div>
+    <hr style="border-color: gray" />
+
+    <div class="container">
+        <div>
+            <button type="button" class="btn btn-default" onclick="DeleteList()">Delete...</button>
         </div>
     </div>
-
-
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="list-group" id="selectedGroup">
-                <H3>To Buy</H3>
-                @foreach (var item in Model.SelectedItems)
-                {
-                    <a id="@item" onclick="Click('@item'); return false;" href="#" class="list-group-item">@item</a>
-                }
-            </div>
-        </div>
-    </div>
-
-
-</div>
-
-<hr style="border-color: gray" />
-
-
-<div class="container">
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="list-group" id="recipes">
-                <H3>Recipes</H3>
-                @foreach (var item in Model.Recipes)  {
-                    <a id="@item" onclick="AddRecipe('@item.Name'); return false;" href="#" class="list-group-item">@item.Name</a>
-                }
-            </div>
-        </div>
-    </div>
-</div>
-
-<hr style="border-color: gray" />
-
-<div class="container">
-    <div>
-        <button type="button" class="btn btn-default" onclick="DeleteList()">Delete...</button>
-    </div>
-</div>
+    
