@@ -7,54 +7,10 @@
 
 <script type="text/javascript">
 
-    sortedItems = @Html.Raw(JsonConvert.SerializeObject(this.Model.OrderedItems));
-
-    function Move(fromIndex, toIndex) {
-        if (toIndex < 0 || toIndex > sortedItems.length)
-            return;
-
-        var item = sortedItems[fromIndex];
-        sortedItems.splice(fromIndex, 1);
-        sortedItems.splice(toIndex, 0, item);
-    }
-
-    function Up(item) {
-        var index = sortedItems.indexOf(item);
-        if (index > 0) {
-            Move(index, index - 1);
-
-            var group = document.getElementById("OrderedItemsGroup");
-            var element = document.getElementById(item);
-            var before = element.previousElementSibling;
-            group.insertBefore(element, before);
-        }
-    }
-
-    function Down(item) {
-        var index = sortedItems.indexOf(item);
-        if (index >= 0 && index < sortedItems.length - 1) {
-            Move(index, index + 1);
-
-            var group = document.getElementById("OrderedItemsGroup");
-            var element = document.getElementById(item);
-            var after = element.nextElementSibling;
-            group.insertBefore(after, element);
-        }
-    }
-
-    function Delete(item) {
-        var index = sortedItems.indexOf(item);
-        if (index >= 0) {
-            sortedItems.splice(index, 1);
-            var group = document.getElementById("OrderedItemsGroup");
-            var element = document.getElementById(item);
-            group.removeChild(element);
-        }
-    }
 
     function Save() {
         var storeName = document.getElementById("nameInput").value;
-        var parameters = "storeId=" + "@Model.ID.ToString()" + "&storeName=" + storeName + "&sortedItems=" + sortedItems.join("§");
+        var parameters = "storeId=" + "@Model.ID.ToString()" + "&storeName=" + storeName;
         var postUrl = "@Url.Action("UpdateStore", "Stores")?" + parameters;
         $.post(postUrl, function (data) {
             window.location.href = "@Url.Action("ViewStores", "Stores")";
@@ -83,26 +39,6 @@
             <H3>Name</H3>
             <input type="text" class="form-control" id="nameInput" value="@Model.Name"/>
 
-            <H3>Items</H3>
-            <div class="list-group" id="OrderedItemsGroup">
-                @foreach (var item in Model.OrderedItems)
-                {
-                    <div class="list-group-item" id="@item">
-
-                        <a onclick="Down('@item');return false;" href="#">
-                            <span class="glyphicon glyphicon-arrow-down" style="float: left; margin-right: 10px"></span>
-                        </a>
-                        <a onclick="Up('@item');return false;" href="#">
-                            <span class="glyphicon glyphicon-arrow-up" style="float: left; margin-right: 10px"></span>
-                        </a>
-                        @item
-                        <a onclick="Delete('@item');return false;" href="#">
-                            <span class="glyphicon glyphicon-remove" style="float: right; color: red"></span>
-                        </a>
-
-                    </div>
-                }
-            </div>
         </div>
     </div>
 </div>

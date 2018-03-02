@@ -9,7 +9,6 @@ namespace ShoppingList.DataAccess
     {
         public string Name { get; set; }
         public Guid ID { get; set; }
-        public List<string> OrderedItems { get; set; }
     }
 
     public static class StoreDTOExtensions
@@ -20,14 +19,12 @@ namespace ShoppingList.DataAccess
             {
                 ID = store.ID,
                 Name = store.Name,
-                OrderedItems = store.OrderedItems.ToList()
             };
         }
 
         public static Store ToModel(this StoreDTO self)
         {
             var result = new Store(self.Name, self.ID);
-            result.BuyItems(self.OrderedItems.ToArray());
             return result;
         }
     }

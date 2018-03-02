@@ -33,11 +33,9 @@ namespace ShoppingList.Controllers {
         }
 
         [HttpPost]
-        public IActionResult UpdateStore(Guid storeId, string storeName, string sortedItems) {
-            var items = sortedItems.Split('§');
+        public IActionResult UpdateStore(Guid storeId, string storeName) {
             var store = _repository.GetStores().First(s => s.ID == storeId);
             store.Name = storeName;
-            store.OrderedItems = items;
             _repository.SaveStore(store);
             return new OkResult();
         }

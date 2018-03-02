@@ -88,7 +88,9 @@ namespace ShoppingList.Controllers
 
         public IActionResult GoShopping(Guid? id) {
             var shoppingList = _repository.GetShoppingList(id.Value);
-            if (shoppingList.Store.IsReal) {
+            if (shoppingList.Store.IsReal)
+            {
+                shoppingList.Store.Order(shoppingList);
                 return View("GoShopping", shoppingList);
             }
             else {

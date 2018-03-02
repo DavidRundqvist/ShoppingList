@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace ShoppingList.Models {
     public class Store : IEquatable<Store> {
@@ -8,19 +9,7 @@ namespace ShoppingList.Models {
 
         public Guid ID { get; }
 
-        private readonly List<string> _orderedItems = new List<string>();
-
-        public string[] OrderedItems
-        {
-            get { return _orderedItems.ToArray(); }
-            set
-            {
-                _orderedItems.Clear();
-                _orderedItems.AddRange(value);
-            }
-        }
-
-    
+        public ShoppingList[] Lists { get; internal set; } = new ShoppingList[0];
 
         public bool IsReal => ID != None.ID;
 
@@ -29,35 +18,37 @@ namespace ShoppingList.Models {
             ID = id;
         }
 
-        public string[] SuggestItemOrder(params string[] items)
+        public void Order(ShoppingList sl)
         {
-            var knownItems = _orderedItems.Intersect(items).ToArray();
-            var unknownItems = items.Except(knownItems);
-            return unknownItems.Concat(knownItems).ToArray();
+            var finishedLists = this.Lists.Where(l => l.IsComplete).ToArray();
+
+            var itemOrder = sl.ItemsToBuy.OrderBy(i => GetWeight(i.Name, finishedLists)).Select(i => i.Name);
+
+            sl.OrderItems(itemOrder);
         }
 
 
-        public void BuyItems(params string[] boughtItems) {
-            if (!boughtItems.Any())
-                return;
+        private float GetWeight(string item, ShoppingList[] lists)
+        {
+            var knowns = lists
+                .Select(l => GetWeight(item, l))
+                .Where(w => w >= 0)
+                .ToArray();
 
-            var before = new List<string>();
-            var after = new List<string>();
+            if (knowns.Any())
+                return knowns.Average();
 
-            var foundIndex = _orderedItems.IndexOf(boughtItems.First());
-            if (foundIndex >= 0) {
-                before = _orderedItems.Take(foundIndex).Except(boughtItems).ToList();
-                after = _orderedItems.Except(before).Except(boughtItems).ToList();
-            }
-            else {
-                after = _orderedItems.ToList();
-            }
+            return -1;
+        }
 
-            var allItems = before.Concat(boughtItems).Concat(after);
+        private float GetWeight(string item, ShoppingList list)
+        {
+            var totalNumber = list.AllItems.Count();
+            var index = list.AllItemNames.ToList().IndexOf(item);
+            if (index >= 0)
+                return (float) index / totalNumber;
 
-            // make switch:
-            _orderedItems.Clear();
-            _orderedItems.AddRange(allItems);
+            return -1;
         }
 
 

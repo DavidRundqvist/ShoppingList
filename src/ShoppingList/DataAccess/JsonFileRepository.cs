@@ -88,10 +88,20 @@ namespace ShoppingList.DataAccess
                     {
                         var stores = GetStores().ToList();
                         var shoppingListDtos = _serializer.Deserialize<List<ShoppingListDTO>>(reader);
-                        var result = shoppingListDtos.Select(dto => dto.ToModel(stores));
+                        var result = shoppingListDtos.Select(dto => dto.ToModel(stores)).ToArray();
+                        SetLists(stores, result);
+
                         return result;
                     }
                 }
+            }
+        }
+
+        private void SetLists(List<Store> stores, Models.ShoppingList[] shoppingLists)
+        {
+            foreach (var store in stores)
+            {
+                store.Lists = shoppingLists.Where(l => l.Store.ID == store.ID).ToArray();
             }
         }
 

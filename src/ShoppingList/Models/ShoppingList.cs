@@ -111,5 +111,16 @@ namespace ShoppingList.Models {
         }
 
 
+        public void OrderItems(IEnumerable<string> itemOrder)
+        {
+            var knowns = itemOrder.Join(_items, name => name, item => item.Name, (name, item) => item).ToArray();
+            var unknowns = _items.Except(knowns);
+
+            _items.Clear();
+            _items.AddRange(unknowns);
+            _items.AddRange(knowns);
+
+        }
+
     }
 }
