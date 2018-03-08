@@ -56,7 +56,7 @@ namespace ShoppingList.Controllers
                 SelectedItems = new string[0],
                 SelectedStore = selectedStore,
                 ShopplingListId = Guid.NewGuid(),
-                PreviousItems = _repository.GetCommonItems(0).OrderBy(n => n).ToArray(),
+                PreviousItems = _repository.GetCommonItems(0).ToArray().ToArray(),
                 Recipes = _repository.GetRecipes().ToArray()
             };
 

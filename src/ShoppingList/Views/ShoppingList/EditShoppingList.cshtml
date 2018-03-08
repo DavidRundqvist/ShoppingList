@@ -13,6 +13,7 @@
 
     var previousItems = @Html.Raw(JsonConvert.SerializeObject(this.Model.PreviousItems.ToArray()));
     var previousStores = @Html.Raw(JsonConvert.SerializeObject(this.Model.PreviousStores.ToArray()));
+    var commonItems = @Html.Raw(JsonConvert.SerializeObject(this.Model.CommonItems.ToArray()));
 
     var recipes = [];
 
@@ -125,6 +126,13 @@
         $.post(postUrl);
     }
 
+    function AddCommonItems() {
+        var index;
+        for (index = 0; index < commonItems.length; ++index) {
+            AddItem(commonItems[index]);
+        }
+    }
+
 
     var itemSearchEngine = new Bloodhound({
         datumTokenizer: Bloodhound.tokenizers.whitespace,
@@ -162,6 +170,7 @@
             source: storeSearchEngine
             });        
     });
+
 
 
 </script>
@@ -234,6 +243,8 @@
             <div class="col-xs-12">
                 <div class="list-group" id="recipes">
                     <H3>Recipes</H3>
+                    <a id="CommonItems" onclick="AddCommonItems(); return false;" href="#" class="list-group-item">Common Items</a>
+                    &nbsp;
                     @foreach (var item in Model.Recipes)
                     {
                         <a id="@item" onclick="AddRecipe('@item.Name'); return false;" href="#" class="list-group-item">@item.Name</a>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using ShoppingList.Models;
 
 namespace ShoppingList.ViewModels {
@@ -13,6 +14,8 @@ namespace ShoppingList.ViewModels {
         public Guid ShopplingListId { get; set; }
 
         public Recipe[] Recipes { get; set; }
+
+        public string[] CommonItems => PreviousItems.Take(5).ToArray();
 
     }
 }
