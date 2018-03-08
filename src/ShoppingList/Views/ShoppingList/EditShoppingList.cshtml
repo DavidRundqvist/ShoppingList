@@ -74,9 +74,12 @@
         if (itemName == null || itemName == "")
             return;
 
-        AddItem(itemName)
+        AddItem(itemName);
 
+        // Clear the value
         textField.value = null;
+        $('#NewItemField').typeahead('val', null);
+
         textField.focus();
     }
 
@@ -111,7 +114,7 @@
         var recipe = recipes[recipeName];
         for (var i = 0; i < recipe.length; i++) {
             var item = recipe[i];
-            AddItem(item)
+            AddItem(item);
         }
     }
 
