@@ -46,7 +46,7 @@ namespace ShoppingList.Models {
 
         public void Remove(params string[] itemNames)
         {
-            var itemsToRemove = itemNames.Join(_items, name => name, item => item.Name, (name, item) => item).ToArray();
+            var itemsToRemove = Join(itemNames, _items);
             foreach (var item in itemsToRemove) {
                 _items.Remove(item);
             }
@@ -60,7 +60,7 @@ namespace ShoppingList.Models {
         {
             var previouslyBought = _items.Where(i => i.IsBought).ToArray();
             var previouslyNotBought = _items.Where(i => !i.IsBought).ToArray();
-            var newboughtItems = boughtItemNames.Join(previouslyNotBought, name => name, item => item.Name, (name, item) => item).ToArray();
+            var newboughtItems = Join(boughtItemNames, previouslyNotBought);
             foreach (var item in newboughtItems) {
                 item.IsBought = true;
             }
@@ -74,7 +74,7 @@ namespace ShoppingList.Models {
         public void UnBuy(params string[] unboughtItemNames)
         {
             var previouslyBought = _items.Where(i => i.IsBought).ToArray();
-            var newunboughtItems = unboughtItemNames.Join(previouslyBought, name => name, item => item.Name, (name, item) => item).ToArray();
+            var newunboughtItems = Join(unboughtItemNames, previouslyBought);
             foreach (var item in newunboughtItems)
             {
                 item.IsBought = false;
@@ -113,13 +113,23 @@ namespace ShoppingList.Models {
 
         public void OrderItems(IEnumerable<string> itemOrder)
         {
-            var knowns = itemOrder.Join(_items, name => name, item => item.Name, (name, item) => item).ToArray();
+            var knowns = Join(itemOrder, _items);
             var unknowns = _items.Except(knowns).ToArray();
 
             _items.Clear();
             _items.AddRange(unknowns);
             _items.AddRange(knowns);
 
+        }
+
+        private Item[] Join(IEnumerable<string> itemNames, IEnumerable<Item> items)
+        {
+            return itemNames.Join(items, 
+                name => name, 
+                item => item.Name, 
+                (name, item) => item, 
+                StringComparer.InvariantCultureIgnoreCase)
+                .ToArray();
         }
 
     }
