@@ -17,7 +17,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShoppingList", "src\Shoppin
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShoppingListTest", "test\ShoppingListTest\ShoppingListTest.csproj", "{21B5C83D-E14C-47FD-BA84-E694A5605A16}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SLApp.Android", "src\SLApp\SLApp.Android\SLApp.Android.csproj", "{0C1BE718-8CF6-4111-A257-78E9945C1A78}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SLApp", "src\SLApp\SLApp\SLApp.shproj", "{8A0FE5B5-3082-48F3-BB5D-C285BDC864A7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SLApp", "SLApp", "{3459C7F7-E4F8-4977-8FFD-BCC7430601A0}"
+EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		src\SLApp\SLApp\SLApp.projitems*{0c1be718-8cf6-4111-a257-78e9945c1a78}*SharedItemsImports = 4
+		src\SLApp\SLApp\SLApp.projitems*{8a0fe5b5-3082-48f3-bb5d-c285bdc864a7}*SharedItemsImports = 13
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -31,6 +41,12 @@ Global
 		{21B5C83D-E14C-47FD-BA84-E694A5605A16}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{21B5C83D-E14C-47FD-BA84-E694A5605A16}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{21B5C83D-E14C-47FD-BA84-E694A5605A16}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C1BE718-8CF6-4111-A257-78E9945C1A78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C1BE718-8CF6-4111-A257-78E9945C1A78}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C1BE718-8CF6-4111-A257-78E9945C1A78}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{0C1BE718-8CF6-4111-A257-78E9945C1A78}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C1BE718-8CF6-4111-A257-78E9945C1A78}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C1BE718-8CF6-4111-A257-78E9945C1A78}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -38,6 +54,9 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{1263DD86-CD88-408B-B191-45959F220370} = {847FD5F9-C031-4A2D-BDD3-4ADF7633B598}
 		{21B5C83D-E14C-47FD-BA84-E694A5605A16} = {261C4E65-CED1-4CD2-B18B-5B946F583358}
+		{0C1BE718-8CF6-4111-A257-78E9945C1A78} = {3459C7F7-E4F8-4977-8FFD-BCC7430601A0}
+		{8A0FE5B5-3082-48F3-BB5D-C285BDC864A7} = {3459C7F7-E4F8-4977-8FFD-BCC7430601A0}
+		{3459C7F7-E4F8-4977-8FFD-BCC7430601A0} = {847FD5F9-C031-4A2D-BDD3-4ADF7633B598}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AC0FEA2D-55F2-48BC-9439-34F2748BD36F}

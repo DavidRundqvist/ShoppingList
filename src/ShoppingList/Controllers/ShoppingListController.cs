@@ -110,6 +110,14 @@ namespace ShoppingList.Controllers
             return new OkResult();
         }
 
+        public IActionResult AddNew(string itemName)
+        {
+            var allLists = _repository.GetAllShoppingLists().ToList();
+            var incompleteList = allLists.FirstOrDefault(s => !s.IsComplete);
+
+            return Add(incompleteList == null ? Guid.NewGuid() : incompleteList.ID, itemName);
+        }
+
         public IActionResult Remove(Guid shoppingListId, string itemName)
         {
             _repository.RemoveItem(shoppingListId, itemName);
