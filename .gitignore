@@ -7,3 +7,5 @@ test/ShoppingListTest/bin/*
 test/ShoppingListTest/project.lock.json
 .vs/*
 *.suo
+src/SLApp/SLApp.Android/bin/*
+src/SLApp/SLApp.Android/obj/*
