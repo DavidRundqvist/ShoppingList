@@ -16,7 +16,7 @@ dotnet publish .\src\ShoppingList -o "\\BRAAVOS\asp\ShoppingList" --configuratio
 Write-Host -foreground Cyan "Starting new version..."
 $startCommand = "cd /home/david/asp/ShoppingList/
 nohup dotnet ShoppingList.dll > /dev/null 2>&1 &"
-ssh -i .\davidAtBraavos $startCommand
+ssh -i .\davidAtBraavos david@braavos $startCommand
 
 # Cleanup
 Write-Host -foreground Cyan "Removing old version..."
