@@ -1,5 +1,6 @@
 ﻿@model ShoppingList.ViewModels.EditShoppingListViewModel
 @using System.Linq
+@using Microsoft.EntityFrameworkCore.Internal
 @using Newtonsoft.Json
 @{
     ViewData["Title"] = "Edit Shopping List";
@@ -123,7 +124,8 @@
         document.getElementById('StoreSelection').value = storeName;
         var parameters = "shoppingListId=@Model.ShopplingListId" + "&storeName=" + storeName;
         var postUrl = "@Url.Action("SelectStore", "ShoppingList")?" + parameters;
-        $.post(postUrl);
+        $.post(postUrl, GoShopping() );
+        
     }
 
     function AddCommonItems() {
@@ -243,7 +245,7 @@
             <div class="col-xs-12">
                 <div class="list-group" id="recipes">
                     <H3>Recipes</H3>
-                    <a id="CommonItems" onclick="AddCommonItems(); return false;" href="#" class="list-group-item">Common Items</a>
+                    <a id="CommonItems" onclick="AddCommonItems(); return false;" href="#" class="list-group-item">Commons - @Model.CommonItems.Join()</a>
                     &nbsp;
                     @foreach (var item in Model.Recipes)
                     {
