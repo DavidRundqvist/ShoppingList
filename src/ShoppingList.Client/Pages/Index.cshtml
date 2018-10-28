@@ -1,0 +1,17 @@
+﻿@page "/"
+@inject Microsoft.AspNetCore.Blazor.Services.IUriHelper _uriHelper
+
+<h1>Loading Shopping List...</h1>
+
+<p><em>Loading...</em></p>
+
+@functions {
+
+    protected override void OnInit()
+    {
+
+        _uriHelper.NavigateTo("/ViewShoppingLists");
+    }
+
+
+}

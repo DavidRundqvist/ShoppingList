@@ -1,0 +1,119 @@
+﻿@page "/ViewShoppingLists"
+@using ShoppingList.Shared.Data
+@using System.Linq
+@using System.Net.Http
+
+
+@inject HttpClient _http
+
+<h2>
+    <span class="label label-default">Shopping Lists</span>
+</h2>
+
+
+<div class="list-group">
+    <a class="list-group-item" asp-controller="ShoppingList" asp-action="CreateShoppingList">
+        <h3 class="list-group-item-heading">New...</h3>
+    </a>
+
+    @if (_shoppingLists == null)
+    {
+        <p>
+            <em>Loading...</em>
+        </p>
+    }
+    else
+    {
+        foreach (var list in _shoppingLists)
+        {
+            <a class="list-group-item" asp-controller="ShoppingList" asp-action="GoShopping" asp-route-id="@list.ID">
+                @*@if (list.)
+                    {
+                        <span class="glyphicon glyphicon-ok" style="color:lightgray" aria-hidden="true"></span>
+                        <span style="color:lightgray;">@list.Description <span class="badge pull-right">@list.AllItems.Count()</span></span>
+                    }
+                    else
+                    {*@
+                <span class="badge">@list.Items.Count()</span>
+                <h3 class="list-group-item-heading">@list.ID</h3>
+                <div style="font-size: 70%" class="list-group-item-text">"hej"</div>
+                @*            }*@
+            </a>
+        }
+    }
+
+</div>
+
+
+
+@functions {
+    ShoppingListDTO[] _shoppingLists;
+
+    protected override async Task OnInitAsync()
+    {
+        _shoppingLists = await _http.GetJsonAsync<ShoppingListDTO[]>("api/shoppinglist");
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@*@using ShoppingList.Shared
+@page "/fetchdata"
+@inject HttpClient Http
+
+<h1>Weather forecast</h1>
+
+<p>This component demonstrates fetching data from the server.</p>
+
+@if (forecasts == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Temp. (C)</th>
+                <th>Temp. (F)</th>
+                <th>Summary</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var forecast in forecasts)
+            {
+                <tr>
+                    <td>@forecast.Date.ToShortDateString()</td>
+                    <td>@forecast.TemperatureC</td>
+                    <td>@forecast.TemperatureF</td>
+                    <td>@forecast.Summary</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@functions {
+    WeatherForecast[] forecasts;
+
+    protected override async Task OnInitAsync()
+    {
+        forecasts = await Http.GetJsonAsync<WeatherForecast[]>("api/SampleData/WeatherForecasts");
+    }
+}*@
