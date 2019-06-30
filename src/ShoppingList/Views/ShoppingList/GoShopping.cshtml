@@ -32,7 +32,9 @@
 
             var parameters = "shoppingListId=@Model.ID" + "&itemName=" + item;
             var postUrl = "@Url.Action("Buy", "ShoppingList")?" + parameters;
-            $.post(postUrl);
+            $.post(postUrl).fail(function () {
+                $("#updateWarning").show();
+            });;
         }
     }
 
@@ -47,38 +49,43 @@
 
 
 <div class="container">
+
     <div>
         <a asp-controller="ShoppingList" asp-action="EditShoppingList" asp-route-id="@Model.ID" class="btn btn-default">Edit</a>
         <button type="button" class="btn btn-default" onclick="window.location.reload(true);">Refresh</button>
     </div>
-    <div class='col-xs-12'>
-        <div class="row">
-            <!-- To buy -->
-            <div class="list-group" id="ToBuyGroup">
-                <H3>To Buy</H3>
-                @foreach (var item in Model.ItemsToBuy)
-                {
-                    <a id="@item.Name" onclick="Click('@item.Name'); return false;" href="#" class="list-group-item">
-                        <span id="checkmark" class="glyphicon glyphicon-ok" style="color: green; display: none"></span>
-                        @item.Name
-                    </a>
-                }
-            </div>
-
-
-            <!-- Bought -->
-            <div class="list-group" id="BoughtGroup">
-                <H3>Bought</H3>
-                @foreach (var item in Model.BoughtItems)
-                {
-                    <a id="@item.Name" onclick="Click('@item.Name'); return false;" href="#" class="list-group-item">
-                        <span id="checkmark" class="glyphicon glyphicon-ok" style="color: green; display: inline"></span>
-                        @item.Name
-                    </a>
-                }
-            </div>
-        </div>
+    <div class="alert alert-danger top-buffer" hidden id="updateWarning">
+        Failed to update!
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
     </div>
+    <div class='col-xs-12'>
+                <div class="row">
+                    <!-- To buy -->
+                    <div class="list-group" id="ToBuyGroup">
+                        <H3>To Buy</H3>
+                        @foreach (var item in Model.ItemsToBuy)
+                        {
+                            <a id="@item.Name" onclick="Click('@item.Name'); return false;" href="#" class="list-group-item">
+                                <span id="checkmark" class="glyphicon glyphicon-ok" style="color: green; display: none"></span>
+                                @item.Name
+                            </a>
+                        }
+                    </div>
+
+
+                    <!-- Bought -->
+                    <div class="list-group" id="BoughtGroup">
+                        <H3>Bought</H3>
+                        @foreach (var item in Model.BoughtItems)
+                        {
+                            <a id="@item.Name" onclick="Click('@item.Name'); return false;" href="#" class="list-group-item">
+                                <span id="checkmark" class="glyphicon glyphicon-ok" style="color: green; display: inline"></span>
+                                @item.Name
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
 </div>
 
 
