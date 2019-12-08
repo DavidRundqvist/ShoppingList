@@ -5,5 +5,6 @@
   </PropertyGroup>
   <PropertyGroup>
     <ActiveDebugProfile>ShoppingList</ActiveDebugProfile>
+    <NameOfLastUsedPublishProfile>LinuxRelease</NameOfLastUsedPublishProfile>
   </PropertyGroup>
 </Project>

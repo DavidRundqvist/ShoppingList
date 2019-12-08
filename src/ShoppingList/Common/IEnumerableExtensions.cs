@@ -24,5 +24,10 @@ namespace ShoppingList.Common {
             }
             return defaultValue();
         }
+
+        public static string Join(this IEnumerable<string> self)
+        {
+            return string.Join("", self);
+        }
     }
 }

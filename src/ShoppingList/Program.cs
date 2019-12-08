@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace ShoppingList
 {
@@ -19,6 +20,8 @@ namespace ShoppingList
             WebHost.CreateDefaultBuilder(args)
                 .UseUrls("http://*:5000")
                 .UseStartup<Startup>()
+            .ConfigureLogging(logging => { 
+                logging.AddConsole(); })
                 .Build();
     }
 }
