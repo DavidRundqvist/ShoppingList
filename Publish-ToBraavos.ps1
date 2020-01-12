@@ -4,7 +4,7 @@ pushd $PSScriptRoot
 
 # Stop previous version
 Write-Host -foreground Cyan "Stopping old version..."
-ssh -i .\davidAtBraavos david@braavos "sudo killall dotnet"
+#ssh -i .\davidAtBraavos david@braavos "sudo killall dotnet"
 
 
 # Publish new

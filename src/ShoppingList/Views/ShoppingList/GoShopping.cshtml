@@ -19,27 +19,64 @@
             var toBuyGroup = document.getElementById("ToBuyGroup");
             toBuyGroup.appendChild(element);
             element.querySelector("#checkmark").style = "color: green; display:none";
+            element.className = "list-group-item bigger";
 
             var parameters = "shoppingListId=@Model.ID" + "&itemName=" + item;
             var postUrl = "@Url.Action("UnBuy", "ShoppingList")?" + parameters;
             $.post(postUrl);
-
-
+            
         } else {
             // Buy
             boughtGroup.appendChild(element);
             element.querySelector("#checkmark").style = "color: green; display:inline";
+            element.className = "list-group-item";
 
             var parameters = "shoppingListId=@Model.ID" + "&itemName=" + item;
             var postUrl = "@Url.Action("Buy", "ShoppingList")?" + parameters;
             $.post(postUrl).fail(function () {
                 $("#updateWarning").show();
             });;
+            DisplayPopupMessage(item);
         }
+        UpdateHeader();
     }
 
+    function UpdateHeader() {
+        var boughtGroup = document.getElementById("BoughtGroup");
+        var toBuyGroup = document.getElementById("ToBuyGroup");
+
+        var numberBought = boughtGroup.childElementCount - 1;
+        var numberToBuy = toBuyGroup.childElementCount - 1;
+
+        var total = numberToBuy + numberBought;
+
+        var element = document.getElementById("header");
+        element.textContent = "To Buy  (" + numberToBuy + "/" + total + ")";
+    }
+
+    function DisplayPopupMessage(item) {
+
+        setTimeout(function () { $('#boughtWindow').modal('hide'); }, 1000);
+
+        $('#boughtWindow').find('#boughtText').text(item + " ✔");
+
+        $('#boughtWindow').modal('show');
+    }
+
+    window.onload = UpdateHeader;
 
 </script>
+
+
+<div class="modal fade" id="boughtWindow" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <h4 id="boughtText"></h4>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 
@@ -62,10 +99,10 @@
                 <div class="row">
                     <!-- To buy -->
                     <div class="list-group" id="ToBuyGroup">
-                        <H3>To Buy</H3>
+                        <H3 id="header">To Buy</H3>
                         @foreach (var item in Model.ItemsToBuy)
                         {
-                            <a id="@item.Name" onclick="Click('@item.Name'); return false;" href="#" class="list-group-item">
+                            <a id="@item.Name" onclick="Click('@item.Name'); return false;" href="#" class="list-group-item bigger">
                                 <span id="checkmark" class="glyphicon glyphicon-ok" style="color: green; display: none"></span>
                                 @item.Name
                             </a>

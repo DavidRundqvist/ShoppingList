@@ -4,6 +4,13 @@
     background: #E0FCFF;
 }
 
+
+.bigger {
+    font-size: large;
+    padding-top: 13px;
+    padding-bottom: 13px;
+}
+
 /* Wrapping element */
 /* Set some basic padding to keep content from hitting the edges */
 .body-content {
