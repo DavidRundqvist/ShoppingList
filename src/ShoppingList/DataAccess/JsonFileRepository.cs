@@ -161,7 +161,11 @@ namespace ShoppingList.DataAccess
 
         public void AddItem(Guid shoppingListId, string item)
         {
-            ModifyList(shoppingListId, l => l.Add(item));
+            if (!string.IsNullOrEmpty(item)) {
+                ModifyList(shoppingListId, l => l.Add(item));
+            } else {
+                Console.WriteLine($"Won't add item since it's null");
+            }
         }
 
         public void RemoveItem(Guid shoppingListId, string item)
@@ -243,6 +247,12 @@ namespace ShoppingList.DataAccess
                 // Modify
                 modification(list);
                 listDto = list.ToDto();
+
+                if (listDto.Items.Any(item => string.IsNullOrEmpty(item.Name))) {
+                    Console.WriteLine($"Won't save list {listDto.ID} since one or more of its items is null");
+                    return;
+                }
+
                 allLists.Insert(0, listDto);
 
                 // Save
