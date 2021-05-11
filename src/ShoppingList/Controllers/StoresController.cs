@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShoppingList.Services;
 
 namespace ShoppingList.Controllers {
+
+    [Authorize]
     public class StoresController : Controller {
         private readonly IRepository _repository;
         private readonly StoreFactory _factory;

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShoppingList.DataAccess;
 using ShoppingList.Models;
@@ -11,6 +12,7 @@ using ShoppingList = ShoppingList.Models.ShoppingList;
 
 namespace ShoppingList.Controllers
 {
+    [Authorize]
     public class ShoppingListController : Controller {
         private readonly IRepository _repository;
         private readonly StoreFactory _storeFactory;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShoppingList.DataAccess;
 using ShoppingList.Models;
@@ -8,6 +9,8 @@ using ShoppingList.ViewModels;
 
 
 namespace ShoppingList.Controllers {
+
+    [Authorize]
     public class SettingsController : Controller {
         private readonly SettingsPersistence _settingsPersistence;
 

@@ -12,6 +12,8 @@ using System.Reflection;
 using Newtonsoft.Json;
 using ShoppingList.DataAccess;
 using ShoppingList.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 
 namespace ShoppingList
 {
@@ -51,6 +53,13 @@ namespace ShoppingList
                                                      return dataDir;
                                                  });
             services.AddSingleton<IRepository, JsonFileRepository>();
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme,
+                    options => {
+                        options.LoginPath = new PathString("/auth/login");
+                        options.AccessDeniedPath = new PathString("/auth/denied");
+                    });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -69,12 +78,17 @@ namespace ShoppingList
 
 
             app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=ShoppingList}/{action=Start}/{id?}");
             });
+            
 
             Console.WriteLine("Configuration finished");
         }

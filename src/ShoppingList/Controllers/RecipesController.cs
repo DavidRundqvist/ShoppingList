@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShoppingList.Models;
 using ShoppingList.Services;
@@ -7,6 +8,7 @@ using ShoppingList.ViewModels;
 
 namespace ShoppingList.Controllers
 {
+    [Authorize]
     public class RecipesController : Controller
     {
         private readonly IRepository _repository;
