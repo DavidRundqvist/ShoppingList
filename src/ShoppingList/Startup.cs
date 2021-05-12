@@ -14,12 +14,13 @@ using ShoppingList.DataAccess;
 using ShoppingList.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Hosting;
 
 namespace ShoppingList
 {
     public class Startup
     {
-        public Startup(IHostingEnvironment env)
+        public Startup(IWebHostEnvironment env)
         {
             var version = typeof(Startup).GetTypeInfo().Assembly.GetName().Version;
             Console.WriteLine($"Starting up Shopping list version {version}");
@@ -46,7 +47,7 @@ namespace ShoppingList
             services.AddSingleton<DirectoryInfo>(sp => {
                                                      var dataPath = Configuration.GetSection("DataPath").Value;
                                                      if (!Path.IsPathRooted(dataPath)) {
-                                                         dataPath = Path.Combine( sp.GetService<IHostingEnvironment>().ContentRootPath, dataPath);
+                                                         dataPath = Path.Combine( sp.GetService<IWebHostEnvironment>().ContentRootPath, dataPath);
                                                      }
                                                      var dataDir = new DirectoryInfo(dataPath);
                                                      Console.WriteLine($"Using data at {dataDir.FullName}");
@@ -63,7 +64,7 @@ namespace ShoppingList
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())
             {

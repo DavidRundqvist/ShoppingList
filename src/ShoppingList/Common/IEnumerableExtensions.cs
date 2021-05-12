@@ -27,7 +27,7 @@ namespace ShoppingList.Common {
 
         public static string Join(this IEnumerable<string> self)
         {
-            return string.Join("", self);
+            return string.Join(", ", self);
         }
     }
 }

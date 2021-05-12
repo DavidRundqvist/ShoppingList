@@ -20,7 +20,7 @@ namespace ShoppingList.Controllers
 
         public IActionResult ViewRecipes()
         {
-            return View("ViewRecipes", _repository.GetRecipes().ToList());
+            return View("ViewRecipes", _repository.GetRecipes().OrderBy(r => r.Name).ToList());
         }
 
         public IActionResult CreateRecipe()
