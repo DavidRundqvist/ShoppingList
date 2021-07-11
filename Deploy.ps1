@@ -7,10 +7,11 @@ robocopy $slFolder $targetFolder /MIR /XD $binFolder $objFolder
 
 
 # Build and run docker image
-$dockerRmCmd = "docker rm -f shoppinglist;sleep 3"
+$dockerPath = "/share/CACHEDEV1_DATA/.qpkg/container-station/bin/docker"
+$dockerRmCmd = "$dockerPath rm -f shoppinglist;sleep 3"
 $gotoFolderCmd = "cd /share/David/ShoppingList"
-$dockerBuildCmd = "docker build -t shoppinglist ."
-$dockerRunCmd = "docker run -d -p 5000:5000 --name shoppinglist -v /share/David/ShoppingListData:/data shoppinglist"
+$dockerBuildCmd = "$dockerPath build -t shoppinglist ."
+$dockerRunCmd = "$dockerPath run -d -p 5000:5000 --name shoppinglist -v /share/David/ShoppingListData:/data shoppinglist"
 $allCommands = "$dockerRmCmd ; $gotoFolderCmd ; $dockerBuildCmd ; $dockerRunCmd"
 ssh admin@nasgul $allCommands 
 
