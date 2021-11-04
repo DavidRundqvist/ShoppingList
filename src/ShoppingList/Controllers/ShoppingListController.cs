@@ -44,7 +44,7 @@ namespace ShoppingList.Controllers
         public IActionResult ViewShoppingLists()
         {
             var allLists = _repository.GetAllShoppingLists().OrderBy(l => l.IsComplete).ToList();
-            return View(allLists);
+            return View("ViewShoppingLists", allLists);
         }
 
         public IActionResult CreateShoppingList()
@@ -80,6 +80,27 @@ namespace ShoppingList.Controllers
             };
 
             return View("EditShoppingList", editViewModel);
+        }
+
+        public IActionResult MoveToNext(Guid id) {
+            var stores = _repository.GetStores().OrderBy(s => s.Name).Select(s => s.Name).ToArray();
+            var sl = _repository.GetShoppingList(id);
+            var remainingItems = sl.AllItems.Where(i => !i.IsBought).Select(i => i.Name).ToArray();
+
+            // Create a new shopping list with these items
+            var newSlId = Guid.NewGuid();
+            foreach(var item in remainingItems) {
+                _repository.AddItem(newSlId, item);
+            }
+
+            // Remove the items from the old shopping list
+            foreach (var item in remainingItems) {
+                _repository.RemoveItem(id, item);
+            }
+
+
+            // View lists
+            return ViewShoppingLists();
         }
 
         public IActionResult DeleteShoppingList(Guid id)
