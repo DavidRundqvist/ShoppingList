@@ -59,7 +59,7 @@ namespace ShoppingList.Controllers
                 SelectedStore = selectedStore,
                 ShopplingListId = Guid.NewGuid(),
                 PreviousItems = _repository.GetCommonItems(0).ToArray(),
-                Recipes = _repository.GetRecipes().ToArray()
+                Recipes = _repository.GetRecipes().OrderBy(r => r.Name).ToArray()
             };
 
             return View("EditShoppingList", editViewModel);
@@ -76,7 +76,7 @@ namespace ShoppingList.Controllers
                 SelectedStore = sl.Store.Name,
                 ShopplingListId = sl.ID,
                 PreviousItems = _repository.GetCommonItems(0).ToArray(),
-                Recipes = _repository.GetRecipes().ToArray()
+                Recipes = _repository.GetRecipes().OrderBy(r => r.Name).ToArray()
             };
 
             return View("EditShoppingList", editViewModel);
