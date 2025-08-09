@@ -10,7 +10,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/src/ShoppingList/bin/Debug/net6.0/ShoppingList.dll",
+            "program": "${workspaceFolder}/src/ShoppingList/bin/Debug/net8.0/ShoppingList.dll",
             "args": [],
             "cwd": "${workspaceFolder}/src/ShoppingList",
             "stopAtEntry": false,
