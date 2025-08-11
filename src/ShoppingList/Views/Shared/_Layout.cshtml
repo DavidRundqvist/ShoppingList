@@ -1,5 +1,6 @@
 ﻿@using System.Reflection
 @using ShoppingList
+@using ShoppingList.Controllers
 <!DOCTYPE html>
 <html>
 <head>
@@ -56,7 +57,7 @@
 
     <footer>
         <p style="font-size: 12px">
-            Version: @typeof(Startup).GetTypeInfo().Assembly.GetName().Version <br />
+            Version: @typeof(ShoppingListController).GetTypeInfo().Assembly.GetName().Version <br />
             Source: <a href="https://github.com/DavidRundqvist/ShoppingList.git">https://github.com/DavidRundqvist/ShoppingList.git</a>
         </p>
     </footer>
