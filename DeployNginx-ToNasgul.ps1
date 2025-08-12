@@ -1,3 +1,9 @@
+# Copy files
+$ngFolder = Resolve-Path $PSScriptRoot\src\ShoppingListNginx
+$targetFolder = "\\nasgul\David\ShoppingListNginx"
+robocopy $ngFolder $targetFolder 
+
+# Build and run docker image
 $dockerPath = "/share/CACHEDEV1_DATA/.qpkg/container-station/bin/docker"
 $dockerRmCmd = "$dockerPath rm -f shoppinglistnginx;sleep 3"
 $gotoFolderCmd = "cd /share/David/ShoppingListNginx"
