@@ -37,11 +37,10 @@ namespace ShoppingList.Controllers {
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
                     userPrincipal,
                     new AuthenticationProperties {
-                        ExpiresUtc = DateTime.UtcNow.AddMinutes(120),
-                        IsPersistent = false,
-                        AllowRefresh = false
+                        IsPersistent = true,
+                        AllowRefresh = true,
+                        ExpiresUtc = DateTimeOffset.UtcNow.AddDays(365) // make sure it's DateTimeOffset
                     });
-
                 return GoToReturnUrl(returnUrl);
             }
 

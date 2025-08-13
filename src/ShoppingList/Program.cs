@@ -23,9 +23,12 @@ builder.Services.AddSingleton<DirectoryInfo>(sp => {
 builder.Services.AddSingleton<IRepository, JsonFileRepository>();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme,
-        options => {
+        options =>
+        {
             options.LoginPath = new PathString("/auth/login");
-            options.AccessDeniedPath = new PathString("/auth/denied");
+            options.AccessDeniedPath = new PathString("/auth/denied");            
+            options.ExpireTimeSpan = TimeSpan.FromDays(365);
+            options.SlidingExpiration = true; 
         });
 
 var app = builder.Build();
