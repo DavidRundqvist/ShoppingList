@@ -39,7 +39,6 @@ var forwardedHeadersOptions = new ForwardedHeadersOptions {
 };
 forwardedHeadersOptions.KnownNetworks.Clear(); // Clear defaults
 forwardedHeadersOptions.KnownProxies.Clear();
-forwardedHeadersOptions.KnownProxies.Add(IPAddress.Parse("10.0.3.4")); // Replace with your nginx container IP
 app.UseForwardedHeaders(forwardedHeadersOptions);
 
 // Configure the HTTP request pipeline.
